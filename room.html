@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="light"></div>
+    <div id="lightAuto">(L Auto)</div>
+    <div id="fan"></div>
+    <div id="fanAuto">(F Auto)</div>
+    <button id="click">Click Me</button>
+
+
+
+    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-database.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    <script>
+        var firebaseConfig = {
+            apiKey: "AIzaSyAm8x8KB3OBKHlt626D2GnbxiE-gkZMpUI",
+            authDomain: "iotass-767a5.firebaseapp.com",
+            databaseURL: "https://iotass-767a5.firebaseio.com",
+            projectId: "iotass-767a5",
+            storageBucket: "iotass-767a5.appspot.com",
+            messagingSenderId: "968098298405",
+            appId: "1:968098298405:web:23b77be48affa2208e1dcc",
+            measurementId: "G-SMPQ3V0BCS"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        var database = firebase.database();
+
+        var light = database.ref("/Room/light");
+        var fan = database.ref("/Room/fan");
+        var lightAuto = database.ref("/Room/lightAuto");
+        var fanAuto = database.ref("/Room/fanAuto");
+        var temp = database.ref("/Room/temp");
+        var hum = database.ref("/Room/hum");
+        var intensity = database.ref("/Room/intensity");
+        var autoFanValue = false
+        var fanValue = 0
+        var autoLightValue = false
+
+
+        light.on('value', function (snapshot) {
+            $('#light').text(snapshot.val());
+
+        });
+        lightAuto.on('value', function (snapshot) {
+
+        });
+        fan.on('value', function (snapshot) {
+            $('#fan').text(snapshot.val());
+
+        });
+        fanAuto.on('value', function (snapshot) {
+            if(snapshot.val() == "1"){
+                autoFanValue = true
+                $('#fanAuto').show()
+            }
+            else{
+                autoFanValue = false
+                $('#fanAuto').hide()
+            }
+        });
+        temp.on('value', function (snapshot) {
+            if(autoFanValue){
+                var q = autoFan(snapshot.val())
+                fan.set(q.toString())
+
+            }
+        });
+        hum.on('value', function (snapshot) {
+            // $('#fan').text(snapshot.val());
+
+        });
+        intensity.on('value', function (snapshot) {
+            // $('#fan').text(snapshot.val());
+
+        });
+
+
+        function autoFan(p){
+            if(p<24)
+                return 0
+            else if(p<27)
+                return 1
+            else if(p<30)
+                return 2
+            else if(p<33)
+                return 3
+            else if(p<36)
+                return 4
+            else
+                return 5
+        }
+
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>
