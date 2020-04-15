@@ -6,13 +6,105 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+<style>
+    #house {
+        display: block;
+        border: 1px solid black;
+        margin: 0 auto;
+        width: 80%;
+        height: 500px;
+    }
+    #box{
+        display: block;
+        border:1px solid black;
+        position: absolute;
+    }
+    .fan {
+        display: block;
+        width: 100px;
+        height: 100px;
+        margin: 20px auto;
+        -webkit-animation: rotation 2s infinite linear;
+
+    }
+
+    .light {
+        width: 250px;
+        height: 450px;
+    }
+
+
+    .speed0 {
+        -webkit-animation: rotation 0s infinite linear;
+    }
+
+    .speed1 {
+        -webkit-animation: rotation 1s infinite linear;
+    }
+
+    .speed2 {
+        -webkit-animation: rotation 0.7s infinite linear;
+    }
+
+    .speed3 {
+        -webkit-animation: rotation 0.5s infinite linear;
+    }
+
+    .speed4 {
+        -webkit-animation: rotation 0.3s infinite linear;
+    }
+
+    .speed5 {
+        -webkit-animation: rotation 0.1s infinite linear;
+    }
+
+    .light0 {
+        background-color: #5C5905;
+    }
+
+    .light1 {
+        background-color: #7A7606;
+    }
+
+    .light2 {
+        background-color: #A6A008;
+    }
+
+    .light3 {
+        background-color: #BAB309;
+    }
+
+    .light4 {
+        background-color: #DED60B;
+    }
+
+    .light5 {
+        background-color: #FFF60D;
+    }
+
+    @-webkit-keyframes rotation {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+
+        to {
+            -webkit-transform: rotate(359deg);
+        }
+    }
+</style>
 
 <body>
-    <div id="light"></div>
-    <div id="lightAuto">(L Auto)</div>
-    <div id="fan"></div>
-    <div id="fanAuto">(F Auto)</div>
-    <button id="click">Click Me</button>
+
+    <div id="house">
+        <div id="box">
+            <div id="light"></div>
+            <div id="lightAuto">(L Auto)</div>
+            <div id="fan"></div>
+            <div id="fanAuto">(F Auto)</div>
+        </div>
+        <img src="img/fan.svg" class="fan">
+        <img src="img/light.svg" class="light">
+    </div>
 
 
 
@@ -43,63 +135,146 @@
         var fanAuto = database.ref("/Room/fanAuto");
         var temp = database.ref("/Room/temp");
         var hum = database.ref("/Room/hum");
-        var intensity = database.ref("/Room/intensity");
+        var intensity = database.ref("/Room/lightIntensity");
         var autoFanValue = false
-        var fanValue = 0
         var autoLightValue = false
 
 
         light.on('value', function (snapshot) {
-            $('#light').text(snapshot.val());
+            $('#light').text(lightPower(snapshot.val()));
+            $('#house').removeClass('light0')
+            $('#house').removeClass('light1')
+            $('#house').removeClass('light2')
+            $('#house').removeClass('light3')
+            $('#house').removeClass('light4')
+            $('#house').removeClass('light5')
+            var p = snapshot.val();
+            if(p == 0){
+                $('#house').addClass('light0')
+            }else if(p==51){
+                $('#house').addClass('light1')
+            }else if(p==102){
+                $('#house').addClass('light2')
+            }else if(p==153){
+                $('#house').addClass('light3')
+            }else if(p==204){
+                $('#house').addClass('light4')
+            }else if(p==255){
+                $('#house').addClass('light5')
+            }
 
         });
         lightAuto.on('value', function (snapshot) {
-
+            if (snapshot.val() == "1") {
+                autoLightValue = true
+                $('#fanAuto').show()
+                listenIntensity();
+            }
+            else {
+                autoLightValue = false
+                $('#fanAuto').hide()
+            }
         });
         fan.on('value', function (snapshot) {
             $('#fan').text(snapshot.val());
+            var p = snapshot.val();
+            $('.fan').removeClass("speed0");
+            $('.fan').removeClass("speed1");
+            $('.fan').removeClass("speed2");
+            $('.fan').removeClass("speed3");
+            $('.fan').removeClass("speed4");
+            $('.fan').removeClass("speed5");
+            if (p == 0) {
+                $('.fan').addClass("speed0");
+            } else if (p == 1) {
+                $('.fan').addClass("speed1");
+            } else if (p == 2) {
+                $('.fan').addClass("speed2");
+            } else if (p == 3) {
+                $('.fan').addClass("speed3");
+            } else if (p == 4) {
+                $('.fan').addClass("speed4");
+            } else if (p == 5) {
+                $('.fan').addClass("speed5");
+            }
 
         });
         fanAuto.on('value', function (snapshot) {
-            if(snapshot.val() == "1"){
+            if (snapshot.val() == "1") {
                 autoFanValue = true
                 $('#fanAuto').show()
+                listenTemp();
             }
-            else{
+            else {
                 autoFanValue = false
                 $('#fanAuto').hide()
             }
         });
-        temp.on('value', function (snapshot) {
-            if(autoFanValue){
-                var q = autoFan(snapshot.val())
-                fan.set(q.toString())
 
-            }
-        });
         hum.on('value', function (snapshot) {
             // $('#fan').text(snapshot.val());
 
         });
-        intensity.on('value', function (snapshot) {
-            // $('#fan').text(snapshot.val());
-
-        });
 
 
-        function autoFan(p){
-            if(p<24)
-                return 0
-            else if(p<27)
-                return 1
-            else if(p<30)
-                return 2
-            else if(p<33)
-                return 3
-            else if(p<36)
-                return 4
+
+        function autoFan(p) {
+            if (p < 24)
+                return 0;
+            else if (p < 27)
+                return 1;
+            else if (p < 30)
+                return 2;
+            else if (p < 33)
+                return 3;
+            else if (p < 36)
+                return 4;
             else
-                return 5
+                return 5;
+        }
+        function autoLight(q) {
+            var p = parseInt(q, 10)
+            if (p > 400)
+                return 0;
+            else if (p > 300)
+                return 51;
+            else if (p > 200)
+                return 102;
+            else if (p > 100)
+                return 153;
+            else if (p > 50)
+                return 204;
+            else
+                return 255;
+
+        }
+
+        function lightPower(p) {
+            switch (p) {
+                case "0": return 0; break;
+                case "51": return 1; break;
+                case "102": return 2; break;
+                case "153": return 3; break;
+                case "204": return 4; break;
+                case "255": return 5; break;
+                default: return 0;
+            }
+        }
+        function listenTemp() {
+            temp.on('value', function (snapshot) {
+                if (autoFanValue) {
+                    var q = autoFan(snapshot.val())
+                    fan.set(q.toString())
+                }
+            });
+        }
+        function listenIntensity() {
+            intensity.on('value', function (snapshot) {
+                if (autoLightValue) {
+                    var q = autoLight(snapshot.val())
+                    light.set(q.toString())
+                }
+            });
         }
 
 
