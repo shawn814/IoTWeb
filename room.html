@@ -54,8 +54,33 @@
         }, 'app2');
 
         let roomId = 1;
+        let searchParams = new URLSearchParams(window.location.search);
+        let key = searchParams.has('roomId') ? searchParams.get('roomId') : "";
+        if (key == "") {
+            window.location = "door.html";
+        }
+        else {
+            roomId = key.toString();
+        }
         // Get the default database instance for an app1
         var database = firebase.database();
+        var a = database.ref().child("/Room");
+
+        // If the room id is fake
+        a.once("value", function (snapshot) {
+            var verifyId = false;
+            snapshot.forEach(function (child) {
+                // console.log(child.key + ": " + child.val());
+                if (roomId == child.key) {
+                    verifyId = true;
+                }
+            });
+            if (!verifyId)
+                window.location = "door.html";
+        });
+
+
+
         let light = database.ref("/Room/" + roomId + "/light");
         let fan = database.ref("/Room/" + roomId + "/fan");
         let lightAuto = database.ref("/Room/" + roomId + "/lightAuto");

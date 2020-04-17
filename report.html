@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-database.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+</head>
+
+<body>
+
+    <canvas id="myChart" width="100" height="100"></canvas>
+</body>
+<script>
+    firebase.initializeApp({
+        databaseURL: "https://bait2123-202003-02.firebaseio.com"
+        // https://bait2123-202003-01.firebaseio.com/
+    });
+
+    // filter the date
+    var database = firebase.database();
+    // var tempValue = {}, humValue = {}, light = {};
+    var tempValue = [], humValue = [], light = [];
+    var tempValue = []
+    var hourLabel = [];
+    var data = {};
+    var temp = [];
+    var year = "2020";
+    var month = "04";
+    var day = "03";
+    var a = database.ref().child('/PI_01_' + year + month + day);
+
+    a.once("value", function (snapshot) {
+
+        snapshot.forEach(function (child) {
+            // console.log(child.key + ": " + child.val());
+            // data.push(child.val());
+            var temp = hum = count = 0;
+            var hr = "";
+            hourLabel.push(child.key);
+            data[child.key] = child.val();
+            for (j = 0; j <= 59; j = j + 1) {
+                var minute = "";
+                if (j < 10) {
+                    minute = "0" + j;
+                } else {
+                    minute = j.toString();
+                }
+                for (k = 0; k < 60; k = k + 10) {
+                    var minuteSecond = "";
+                    if (k == 0) {
+                        minuteSecond = minute + "0" + k;
+                    } else {
+                        minuteSecond = minute + "" + k;
+                    }
+                    // console.log(hr + minuteSecond);
+                    // var pro = data[hr][minuteSecond] || {};
+                    if (typeof data[child.key][minuteSecond] !== 'undefined') {
+                        // console.log("undefined");
+                        // Check null or empty
+                        if (data[child.key][minuteSecond].tempe != "" || data[child.key][minuteSecond].humid != "") {
+                            temp += parseInt(data[child.key][minuteSecond].tempe);
+                            hum += parseInt(data[child.key][minuteSecond].humid);
+                            count++;
+                        }
+                        console.log(child.key + ":" + minuteSecond);
+                    } else {
+                        console.log("undefined");
+                    }
+                }
+            }
+            // tempValue[child.key] = Math.round(temp / count);
+            // humValue[child.key] = Math.round(hum / count);
+            tempValue.push(Math.round(temp / count));
+            humValue.push(Math.round(temp / count));
+
+        });
+    });
+    draw();
+    
+    function draw() {
+        var ctx = document.getElementById('myChart');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: hourLabel,
+                datasets: [{
+                    label: '# Celsius',
+                    data: tempValue,
+                    
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    }
+    // for (i = 0; i < 24; i++) {
+    //     var temp = hum = 0;
+    //     var hr = "";
+    //     if (i < 10) {
+    //         hr = "0" + i;
+    //     }
+    //     else {
+    //         hr = i.toString();
+    //     }
+    //     if (data[hr]) {
+    //         for (j = 0; j <= 59; j = j + 1) {
+    //             var minute = "";
+    //             if (j < 10) {
+    //                 minute = "0" + j;
+    //             } else {
+    //                 minute = j.toString();
+    //             }
+
+    //             for (k = 0; k < 60; k = k + 10) {
+    //                 var minuteSecond = "";
+    //                 if (k == 0) {
+    //                     minuteSecond = minute + "0" + k;
+    //                 } else {
+    //                     minuteSecond = minute + "" + k;
+    //                 }
+    //                 console.log(hr + minuteSecond);
+    //                 // var pro = data[hr][minuteSecond] || {};
+    //                 if (typeof data[hr][minuteSecond] === 'undefined'){
+    //                     console.log("undefined");
+    //                 }else{
+    //                     temp += data[hr][minuteSecond].tempe;
+    //                     hum += data[hr][minuteSecond].humid;
+    //                 }
+    //                 // if (typeof data[hr][minuteSecond].length) {
+    //                 //     temp += data[hr][minuteSecond].tempe;
+    //                 //     hum += data[hr][minuteSecond].humid;
+    //                 // }
+    //             }
+    //         }
+    //     }else{
+    //         console.log("nicholas suck");
+    //     }
+    // }
+
+
+
+
+
+
+
+        // data[hr].forEach(element => {
+        //     console.log(element.humid);
+        // });
+        // tempValue.push(temp);
+        // humValue.push(hum);
+        // console.log(tempValue[i])
+        // console.log("-------------------------");
+        // conclude the hr 
+
+
+    // }
+        // $.each(data, function (index,value) { console.log(index + ": " + value); });
+
+
+</script>
+
+</html>
