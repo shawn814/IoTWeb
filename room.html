@@ -1,361 +1,376 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Room</title>
-        <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-database.js"></script>
-        <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
-        <style>
-            #house {
-                display: block;
-                border: 1px solid black;
-                margin: 0 auto;
-                width: 80%;
-                height: 500px;
-                position: relative;
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room</title>
+    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-database.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+    <style>
+        #house {
+            display: block;
+            border: 1px solid black;
+            margin: 0 auto;
+            width: 80%;
+            height: 500px;
+            position: relative;
+        }
+
+        .inline>* {
+            display: inline-block;
+        }
+
+        #box {
+            display: block;
+            border: 1px solid black;
+            margin: 10px;
+            padding: 10px 5px;
+            position: absolute;
+            color: white;
+            background-color: green;
+        }
+
+        #fan {
+            display: block;
+            width: 100px;
+            height: 100px;
+            margin: 20px auto;
+        }
+
+        #light {
+            width: 250px;
+            height: 350px;
+            position: absolute;
+            bottom: 0;
+            border: 1px solid black;
+        }
+
+        .speed1 {
+            animation: rotation 1s infinite linear;
+        }
+
+        .speed2 {
+            animation: rotation 0.7s infinite linear;
+        }
+
+        .speed3 {
+            animation: rotation 0.5s infinite linear;
+        }
+
+        .speed4 {
+            animation: rotation 0.3s infinite linear;
+        }
+
+        .speed5 {
+            animation: rotation 0.1s infinite linear;
+        }
+
+        .light0 {
+            background-color: #5C5905;
+        }
+
+        .light1 {
+            background-color: #7A7606;
+        }
+
+        .light2 {
+            background-color: #A6A008;
+        }
+
+        .light3 {
+            background-color: #BAB309;
+        }
+
+        .light4 {
+            background-color: #DED60B;
+        }
+
+        .light5 {
+            background-color: #FFF60D;
+        }
+
+        .background0 {
+            background-color: #000002e3;
+        }
+
+        .background1 {
+            background-color: #000002b0;
+        }
+
+        .background2 {
+            background-color: #0000029d;
+        }
+
+        .background3 {
+            background-color: #00000286;
+        }
+
+        .background4 {
+            background-color: #00000257;
+        }
+
+        .background5 {
+            background-color: #00000244;
+        }
+
+        @keyframes rotation {
+            100% {
+                transform: rotate(360deg);
             }
+        }
+    </style>
+</head>
 
-            .inline>* {
-                display: inline-block;
-            }
-
-            #box {
-                display: block;
-                border: 1px solid black;
-                margin: 10px;
-                padding: 10px 5px;
-                position: absolute;
-                color: white;
-                background-color: green;
-            }
-
-            #fan {
-                display: block;
-                width: 100px;
-                height: 100px;
-                margin: 20px auto;
-            }
-
-            #light {
-                width: 250px;
-                height: 350px;
-                position: absolute;
-                bottom: 0;
-                border: 1px solid black;
-            }
-
-            .speed1 {
-                animation: rotation 1s infinite linear;
-            }
-
-            .speed2 {
-                animation: rotation 0.7s infinite linear;
-            }
-
-            .speed3 {
-                animation: rotation 0.5s infinite linear;
-            }
-
-            .speed4 {
-                animation: rotation 0.3s infinite linear;
-            }
-
-            .speed5 {
-                animation: rotation 0.1s infinite linear;
-            }
-
-            .light0 {
-                background-color: #5C5905;
-            }
-
-            .light1 {
-                background-color: #7A7606;
-            }
-
-            .light2 {
-                background-color: #A6A008;
-            }
-
-            .light3 {
-                background-color: #BAB309;
-            }
-
-            .light4 {
-                background-color: #DED60B;
-            }
-
-            .light5 {
-                background-color: #FFF60D;
-            }
-
-            .background0 {
-                background-color: #000002e3;
-            }
-
-            .background1 {
-                background-color: #000002b0;
-            }
-
-            .background2 {
-                background-color: #0000029d;
-            }
-
-            .background3 {
-                background-color: #00000286;
-            }
-
-            .background4 {
-                background-color: #00000257;
-            }
-
-            .background5 {
-                background-color: #00000244;
-            }
-
-            @keyframes rotation {
-                100% {
-                    transform: rotate(360deg);
-                }
-            }
-        </style>
-    </head>
-
-    <body>
-        <div id="house">
-            <div id="box">
-                <div class="inline">
-                    <div id="light-level"></div>
-                    <div id="lightAuto">(Auto)</div>
-                </div>
-                <div class="inline">
-                    <div id="fan-level"></div>
-                    <div id="fanAuto">(Auto)</div>
-                </div>
-
-                <div id="temp-level"></div>
-                <div id="intensity-level"></div>
+<body>
+    <div id="house">
+        <div id="box">
+            <div class="inline">
+                <div id="light-level"></div>
+                <div id="lightAuto">(Auto)</div>
             </div>
-            <img src="img/fan.svg" id="fan">
-            <img src="img/light.svg" id="light">
+            <div class="inline">
+                <div id="fan-level"></div>
+                <div id="fanAuto">(Auto)</div>
+            </div>
+
+            <div id="temp-level"></div>
+            <div id="intensity-level"></div>
+            <div id="hum-level"></div>
         </div>
+        <img src="img/fan.svg" id="fan">
+        <img src="img/light.svg" id="light">
+    </div>
 
-        <script>
-            // Initialize Firebase
-            // firebase.initializeApp({
-            //     apiKey: "AIzaSyAm8x8KB3OBKHlt626D2GnbxiE-gkZMpUI",
-            //     authDomain: "iotass-767a5.firebaseapp.com",
-            //     databaseURL: "https://iotass-767a5.firebaseio.com",
-            //     projectId: "iotass-767a5",
-            //     storageBucket: "iotass-767a5.appspot.com",
-            //     messagingSenderId: "968098298405",
-            //     appId: "1:968098298405:web:23b77be48affa2208e1dcc",
-            //     measurementId: "G-SMPQ3V0BCS"
-            // });
-
-            // let database = firebase.database();
-
-            // var firebaseConfig = {
-            //     apiKey: "AIzaSyBbcc9YCUalxyI2-wULte2mWPxLLqmhzac",
-            //     authDomain: "bait2123-202003-02.firebaseapp.com",
-            //     databaseURL: "https://bait2123-202003-02.firebaseio.com",
-            //     projectId: "bait2123-202003-02",
-            //     storageBucket: "bait2123-202003-02.appspot.com",
-            //     messagingSenderId: "493541403063",
-            //     appId: "1:493541403063:web:6c7a034ea8b081d6562032"
-            // };
-            // // Initialize Firebase
-            // firebase.initializeApp(firebaseConfig);
-            // let database2 = firebase.database();
-
-            const app1 = firebase.initializeApp({
-                databaseURL: "https://iotass-767a5.firebaseio.com"
-            });
-
-            const app2 = firebase.initializeApp({
-                databaseURL: "https://bait2123-202003-02.firebaseio.com"
-            }, 'app2');
-
-            let roomId = 1;
-            // Get the default database instance for an app1
-            var database = firebase.database();
-            let light = database.ref("/Room/" + roomId + "/light");
-            let fan = database.ref("/Room/" + roomId + "/fan");
-            let lightAuto = database.ref("/Room/" + roomId + "/lightAuto");
-            let fanAuto = database.ref("/Room/" + roomId + "/fanAuto");
-            let temp = database.ref("/Room/" + roomId + "/temp");
-            let hum = database.ref("/Room/" + roomId + "/hum");
-            let intensity = database.ref("/Room/" + roomId + "/lightIntensity");
-            let autoFanValue = false;
-            let autoLightValue = false;
-
-            // Get a database instance for app2
-            var database1 = firebase.database(app2);
+    <script>
 
 
-            // light.set("0");
-            // fan.set("0");
-            // lightAuto.set("0");
-            // fanAuto.set("0");
-            // temp.set("25");
-            // hum.set("45");
-            // intensity.set("66");
+        const app1 = firebase.initializeApp({
+            databaseURL: "https://iotass-767a5.firebaseio.com"
+        });
+
+        const app2 = firebase.initializeApp({
+            databaseURL: "https://bait2123-202003-02.firebaseio.com"
+        }, 'app2');
+
+        let roomId = 1;
+        // Get the default database instance for an app1
+        var database = firebase.database();
+        let light = database.ref("/Room/" + roomId + "/light");
+        let fan = database.ref("/Room/" + roomId + "/fan");
+        let lightAuto = database.ref("/Room/" + roomId + "/lightAuto");
+        let fanAuto = database.ref("/Room/" + roomId + "/fanAuto");
+        let temp = database.ref("/Room/" + roomId + "/temp");
+        let hum = database.ref("/Room/" + roomId + "/hum");
+        let intensity = database.ref("/Room/" + roomId + "/lightIntensity");
+        let autoFanValue = false;
+        let autoLightValue = false;
+        let gotIntensityData = true;
+        let gotTempData = true;
+        let gotHumData = true;
+
+        // Get a database instance for app2
+        var database1 = firebase.database(app2);
 
 
-            // intensity1.on('value',function(power){
-            //     console.log(power.val());
-            // });
+        // light.set("0");
+        // fan.set("0");
+        // lightAuto.set("0");
+        // fanAuto.set("0");
+        // temp.set("25");
+        // hum.set("45");
+        // intensity.set("66");
 
 
-            listenIntensity();
-            listenTemp();
-            light.on('value', function (power) {
-                let light_level = 0;
-                // light level based on incoming light power
-                var p = power.val()
-                if (p < 51)
-                    light_level = 0
-                else if (p < 102)
-                    light_level = 1
-                else if (p < 153)
-                    light_level = 2
-                else if (p < 204)
-                    light_level = 3
-                else if (p < 255)
-                    light_level = 4
-                else
-                    light_level = 5
-                $('#light').removeClass().addClass('light' + light_level);  // adjust light level
+        // intensity1.on('value',function(power){
+        //     console.log(power.val());
+        // });
 
-                if (power.val() == "")
-                    $('#light-level').text("Light: 0");
-                else
-                    $('#light-level').text("Light: " + light_level);  // display light level
-            });
 
-            lightAuto.on('value', function (snapshot) {
-                if (snapshot.val() == "1") {
-                    autoLightValue = true;
-                    $('#lightAuto').show();
-                    listenIntensity();
-                } else {
-                    autoLightValue = false;
-                    $('#lightAuto').hide();
+        listenIntensity();
+        listenTemp();
+        listenHum();
+        light.on('value', function (power) {
+            let light_level = 0;
+            // light level based on incoming light power
+            var p = power.val()
+            if (p < 51)
+                light_level = 0
+            else if (p < 102)
+                light_level = 1
+            else if (p < 153)
+                light_level = 2
+            else if (p < 204)
+                light_level = 3
+            else if (p < 255)
+                light_level = 4
+            else
+                light_level = 5
+            $('#light').removeClass().addClass('light' + light_level);  // adjust light level
+
+            if (power.val() == "")
+                $('#light-level').text("Light: 0");
+            else
+                $('#light-level').text("Light: " + light_level);  // display light level
+        });
+
+        lightAuto.on('value', function (snapshot) {
+            if (snapshot.val() == "1") {
+                autoLightValue = true;
+                $('#lightAuto').show();
+                listenIntensity();
+            } else {
+                autoLightValue = false;
+                $('#lightAuto').hide();
+            }
+        });
+
+        fan.on('value', function (fan_speed) {
+            $('#fan').removeClass();
+            if (fan_speed.val() >= 1 && fan_speed.val() <= 5) $('#fan').addClass("speed" + fan_speed.val());
+            if (fan_speed.val() == "")
+                $('#fan-level').text("Fan: 0");
+            else
+                $('#fan-level').text("Fan: " + fan_speed.val());
+        });
+
+        fanAuto.on('value', function (snapshot) {
+            if (snapshot.val() == "1") {
+                autoFanValue = true
+                $('#fanAuto').show()
+                listenTemp();
+            }
+            else {
+                autoFanValue = false
+                $('#fanAuto').hide()
+            }
+        });
+
+        function autoFan(p) {
+            if (p < 24) return 0;
+            else if (p < 27) return 1;
+            else if (p < 30) return 2;
+            else if (p < 33) return 3;
+            else if (p < 36) return 4;
+            else return 5;
+        }
+
+        function autoLight(q) {
+            var p = parseInt(q, 10)
+            if (p > 400) return 0;
+            else if (p > 300) return 51;
+            else if (p > 200) return 102;
+            else if (p > 100) return 153;
+            else if (p > 50) return 204;
+            else return 255;
+
+        }
+
+        function listenTemp() {
+            temp.on('value', function (snapshot) {
+                // $('#temp-level').text('Temperature: ' + snapshot.val() + String.fromCharCode(8451));
+                if (autoFanValue) {
+                    var q = autoFan(snapshot.val())
+                    fan.set(q.toString())
                 }
-            });
-
-            fan.on('value', function (fan_speed) {
-                $('#fan').removeClass();
-                if (fan_speed.val() >= 1 && fan_speed.val() <= 5) $('#fan').addClass("speed" + fan_speed.val());
-                if (fan_speed.val() == "")
-                    $('#fan-level').text("Fan: 0");
-
-                else
-                    $('#fan-level').text("Fan: " + fan_speed.val());
-            });
-
-            fanAuto.on('value', function (snapshot) {
-                if (snapshot.val() == "1") {
-                    autoFanValue = true
-                    $('#fanAuto').show()
-                    listenTemp();
+                if (snapshot.val() == "") {
+                    gotTempData = false;
+                    // $("#temp-level").text("Temperature: " + "0 " + String.fromCharCode(8451));
                 }
                 else {
-                    autoFanValue = false
-                    $('#fanAuto').hide()
+                    gotTempData = true;
+                    $("#temp-level").text("Temperature: " + snapshot.val() + String.fromCharCode(8451));
                 }
             });
+        }
 
-            function autoFan(p) {
-                if (p < 24) return 0;
-                else if (p < 27) return 1;
-                else if (p < 30) return 2;
-                else if (p < 33) return 3;
-                else if (p < 36) return 4;
-                else return 5;
-            }
+        function listenIntensity() {
+            intensity.on('value', function (snapshot) {
+                var q = autoLight(snapshot.val());
+                var s = snapshot.val();
+                var background = 0;
+                var text = "";
+                $("#house").removeClass();
+                if (s > 400) {
+                    background = 5;
+                }
+                else if (s > 300) {
+                    background = 4;
+                }
+                else if (s > 200) {
+                    background = 3;
+                }
+                else if (s > 100) {
+                    background = 2;
+                }
+                else if (s > 50) {
+                    background = 1;
+                }
+                else {
+                    background = 0;
+                }
+                if (s == "") {
+                    // $('#intensity-level').text("0");
+                    gotIntensityData = false;
+                } else {
+                    gotIntensityData = true;
+                    $('#intensity-level').text("Light Intensity: " + s);
+                }
+                $('#house').addClass("background" + background);
+                if (autoLightValue) {
+                    light.set(q.toString())
+                }
+            });
+        }
+        function listenHum() {
+            hum.on('value', function (snapshot) {
+                if (snapshot.val() == "")
+                    gotHumData = false;
+                else {
+                    gotHumData = true;
+                    $('#hum-level').text('Humidity: ' + snapshot.val())
+                }
+            })
+        }
 
-            function autoLight(q) {
-                var p = parseInt(q, 10)
-                if (p > 400) return 0;
-                else if (p > 300) return 51;
-                else if (p > 200) return 102;
-                else if (p > 100) return 153;
-                else if (p > 50) return 204;
-                else return 255;
+        let db = database1.ref();
+        let d = new Date();
+        setInterval(() => {
+            var tempMonth = "0" + (d.getMonth() + 1);
+            var tempDay = "0" + d.getDate();
+            var tempHour = "0" + d.getHours();
 
-            }
+            let month = tempMonth.substring(tempMonth.length - 2);
+            let day = tempDay.substring(tempDay.length - 2);
+            let hour = tempHour.substring(tempHour.length - 2);
 
-            function listenTemp() {
-                temp.on('value', function (snapshot) {
-                    $('#temp-level').text('Temperature: ' + snapshot.val() + String.fromCharCode(8451));
-                    if (autoFanValue) {
-                        var q = autoFan(snapshot.val())
-                        fan.set(q.toString())
+            childObject = database1.ref("/PI_01_2020" + month + day + "/" + hour);
+            childObject.limitToLast(1).once('child_added', function (object) {
+                // if (data != object.val()) {
+                if (!gotIntensityData){
+                    $('#intensity-level').text("Light Intensity1: " + object.val().light);
+                    if(autoLightValue){
+                        light.set(autoLight(object.val().light).toString())
                     }
-                });
-            }
+                }
+                if (!gotTempData){
+                    $("#temp-level").text("Temperature1: " + object.val().tempe + String.fromCharCode(8451));
+                    if(autoFanValue){
+                        fan.set(autoFan(object.val().tempe).toString())
+                    }
+                }
+                if (!gotHumData){
+                    $('#hum-level').text('Humidity1: ' + object.val().humid);
+                }
+                console.log(object.val().sound);
+                console.log(hour)
+                console.log("---------------------------")
+                // }
+            });
+        }, 1000);
 
-            function listenIntensity() {
-                intensity.on('value', function (snapshot) {
-                    var q = autoLight(snapshot.val());
-                    var s = snapshot.val();
-                    var background = 0;
-                    var text = "";
-                    $("#house").removeClass();
-                    if (s > 400) {
-                        background = 5;
-                    }
-                    else if (s > 300) {
-                        background = 4;
-                    }
-                    else if (s > 200) {
-                        background = 3;
-                    }
-                    else if (s > 100) {
-                        background = 2;
-                    }
-                    else if (s > 50) {
-                        background = 1;
-                    }
-                    else {
-                        background = 0;
-                    }
-                    if (s == "") {
-                        $('#intensity-level').text("0");
-                    } else {
-                        $('#intensity-level').text("Humidity: " + s);
-                    }
-                    $('#house').addClass("background" + background);
-                    if (autoLightValue) {
-                        light.set(q.toString())
-                    }
-                });
-            }
-
-            let db = database1.ref();
-            let d = new Date();
-            setInterval(() => {
-                var tempMonth = "0" + (d.getMonth() + 1);
-                var tempDay = "0" + d.getDate();
-                var tempHour = "0" + d.getHours();
-
-                let month = tempMonth.substring(tempMonth.length - 2);
-                let day = tempDay.substring(tempDay.length - 2);
-                let hour = tempHour.substring(tempHour.length - 2);
-
-                childObject = database1.ref("/PI_01_2020" + month + day + "/" + hour);
-                childObject.limitToLast(1).once('child_added', function (object) {
-                    if (data != object.val()) {
-                        $('#intensity-level').text("Humidity: " + object.val().humid);
-                        $("#temp-level").text("Temperature: " + object.val().tempe + String.fromCharCode(8451));
-                    }
-                });
-            }, 1000);
-
-        </script>
-    </body>
+    </script>
+</body>
 
 </html>
