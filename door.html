@@ -79,9 +79,9 @@
             let door2 = database.ref("/Room/2/door");
             let door3 = database.ref("/Room/3/door");
 
-            database.ref().on('value', function (e) {
-                $("#loading").hide();
-                $("#main").show();
+            database.ref().once('value', function (e) {
+                $("#loading").fadeOut();
+                $("#main").fadeIn();
             })
 
             door1.on('value', function (x) {
