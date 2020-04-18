@@ -101,6 +101,24 @@
             width: max-content;
             margin: 10px auto;
         }
+        #graphBox {
+            position: relative;
+            height:550px;
+        }
+
+        #download {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            top: 0;
+            right: 10px;
+            border-radius: 10px;
+            background-color: lightblue;
+        }
+        #download img{
+            width: 50px;
+            height: 50px;
+        }
     </style>
 </head>
 
@@ -120,8 +138,12 @@
     </div>
     <div id="gif"></div>
     <div id="bg"></div>
-
-    <canvas id="myChart"></canvas>
+    <div id="graphBox">
+        <a id="download" download="HumidityReport.jpg" href="" title="Download Chart">
+            <img src="img/download.svg" alt="">
+        </a>
+        <canvas id="myChart"></canvas>
+    </div>
 </body>
 <script>
     firebase.initializeApp({
@@ -163,6 +185,7 @@
     // check url
     $("#box").hide();
     $('#bg').hide();
+    $('#graphBox').hide();
     let searchParams = new URLSearchParams(window.location.search);
     var tempDay = searchParams.has('day') ? searchParams.get('day') : "";
     var tempMonth = searchParams.has('month') ? searchParams.get('month') : "";
@@ -246,6 +269,7 @@
     function popResult() {
         $("#box").show();
         $('#gif').hide();
+        $('#graphBox').show();
     }
 
 
