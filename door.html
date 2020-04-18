@@ -86,13 +86,14 @@
             });
 
             $(document).on('click', '.door.open', function (e) {
+                let roomid = $(this).attr('id');
+                $(this).find('.indicator').addClass('greenlight');
                 beep().play();
-                if ($(this).text().trim() == "Room 1")
-                    window.location = "room.html?roomId=1";
-                if ($(this).text().trim() == "Room 2")
-                    window.location = "room.html?roomId=2";
-                if ($(this).text().trim() == "Room 3")
-                    window.location = "room.html?roomId=3";
+                if (roomid != 0) {
+                    setTimeout(() => {
+                        window.location = "room.html?roomId=" + roomid;
+                    }, 1000);
+                }
             });
 
             $(document).on('click', '.door.close', function (e) {
