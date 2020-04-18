@@ -9,13 +9,14 @@
         <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-database.js"></script>
         <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
         <link rel="stylesheet" href="style/door.css ">
-        
+
     </head>
 
     <body>
-        <div class="door">
+        <div id="1" class="door">
             <div class="number">Room 1</div>
             <div class="handle"></div>
+            <div class="indicator"></div>
             <div class="qr">
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 21 21" stroke="none">
                     <path
@@ -25,9 +26,10 @@
             </div>
         </div>
 
-        <div class="door">
+        <div id="2" class="door">
             <div class="number">Room 2</div>
             <div class="handle"></div>
+            <div class="indicator"></div>
             <div class="qr">
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 21 21" stroke="none">
                     <path
@@ -37,9 +39,10 @@
             </div>
         </div>
 
-        <div class="door">
+        <div id="3" class="door">
             <div class="number">Room 3</div>
             <div class="handle"></div>
+            <div class="indicator"></div>
             <div class="qr">
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 21 21" stroke="none">
                     <path
@@ -63,7 +66,60 @@
 
             let database = firebase.database();
 
-            
+            let door1 = database.ref("/Room/1/door");
+            let door2 = database.ref("/Room/2/door");
+            let door3 = database.ref("/Room/3/door");
+
+            door1.on('value', function (x) {
+                $("#1").removeClass();
+                x.val() == 0 ? $("#1").addClass("door close") : $("#1").addClass("door open");
+            });
+
+            door2.on('value', function (x) {
+                $("#2").removeClass();
+                x.val() == 0 ? $("#2").addClass("door close") : $("#2").addClass("door open");
+            });
+
+            door3.on('value', function (x) {
+                $("#3").removeClass();
+                x.val() == 0 ? $("#3").addClass("door close") : $("#3").addClass("door open");
+            });
+
+            $(document).on('click', '.door.open', function (e) {
+                beep().play();
+                if ($(this).text().trim() == "Room 1")
+                    window.location = "room.html?roomId=1";
+                if ($(this).text().trim() == "Room 2")
+                    window.location = "room.html?roomId=2";
+                if ($(this).text().trim() == "Room 3")
+                    window.location = "room.html?roomId=3";
+            });
+
+            $(document).on('click', '.door.close', function (e) {
+                console.log("test");
+                $(this).find('.indicator').removeClass('redlight');
+                setTimeout(() => {
+                    $(this).find('.indicator').toggleClass('redlight');
+                    beep().play();
+                    setTimeout(() => {
+                        $(this).find('.indicator').toggleClass('redlight');
+                        setTimeout(() => {
+                            $(this).find('.indicator').toggleClass('redlight');
+                            beep().play();
+                            setTimeout(() => {
+                                $(this).find('.indicator').toggleClass('redlight');
+                            }, 100);
+                        }, 100);
+                    }, 100);
+                }, 100);
+                $(this).find('.indicator').removeClass('redlight');
+            });
+
+            function beep() {
+                const sound = new Audio();
+                sound.src = "beep.mp3"
+                return sound;
+            }
         </script>
     </body>
 
