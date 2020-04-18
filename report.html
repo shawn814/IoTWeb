@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Humidity Report</title>
+    <title>Temperature Report</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-database.js"></script>
@@ -255,6 +255,7 @@
                         tempValue.push(Math.round(temp / count));
                     });
                     draw();
+                    $('#graphBox').show();
                     popResult()
 
                 });
@@ -280,7 +281,6 @@
     function popResult() {
         $("#box").show();
         $('#gif').hide();
-        $('#graphBox').show();
     }
 
 
@@ -295,6 +295,10 @@
             labels: hourLabel,
             datasets: [{
                 label: "Temperature",
+                borderWidth: 1,
+                borderColor: "green",
+                backgroundColor: "#04bd0a59",
+                scaleStepWidth: 1,
                 data: tempValue,
                 fill: true,
             }]
@@ -313,8 +317,17 @@
             },
             scales: {
                 yAxes: [{
+                    gridLines: {
+                        color: "black",
+                    },
                     ticks: {
                         beginAtZero: false,
+                        fontColor: 'black',
+
+                    },
+                    ticks: {
+                        beginAtZero: false,
+                        fontColor: 'black',
 
                     },
                     scaleLabel: {
@@ -324,6 +337,12 @@
                     }
                 }],
                 xAxes: [{
+                    gridLines: {
+                        color: "black",
+                    },
+                    ticks: {
+                        fontColor: 'black',
+                    },
                     scaleLabel: {
                         display: true,
                         labelString: "Time in 24-hour",
@@ -333,7 +352,8 @@
             },
             title: {
                 display: true,
-                text: 'The average change of temperature at ' + day + "/" + month + "/" + year
+                text: 'The average change of temperature at ' + day + "/" + month + "/" + year,
+                fontColor:"black",
             }
 
         };

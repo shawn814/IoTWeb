@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Temperature Report</title>
+    <title>Humidity Report</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-database.js"></script>
@@ -101,9 +101,10 @@
             width: max-content;
             margin: 10px auto;
         }
+
         #graphBox {
             position: relative;
-            height:550px;
+            height: 550px;
         }
 
         #download {
@@ -115,7 +116,8 @@
             border-radius: 10px;
             background-color: lightblue;
         }
-        #download img{
+
+        #download img {
             width: 50px;
             height: 50px;
         }
@@ -172,10 +174,17 @@
         $(window).bind('resize', set_body_height);
         set_body_height();
     });
-
+    $('#download').on("click", e => {
+        /*Get image of canvas element*/
+        var url_base64jp = document.getElementById("myChart").toDataURL("image/jpg");
+        /*get download button (tag: <a></a>) */
+        var a = document.getElementById("download");
+        /*insert chart image url to download button (tag: <a></a>) */
+        a.href = url_base64jp;
+        
+    });
     $('#btn').on('click', e => {
         var date = new Date($('#myDate').val());
-
         var aDay = date.getDate();
         var aMonth = date.getMonth() + 1;
         var aYear = date.getFullYear();
@@ -244,6 +253,7 @@
                         humValue.push(Math.round(hum / count));
                     });
                     draw();
+                    $('#graphBox').show();
                     popResult()
 
                 });
@@ -269,7 +279,6 @@
     function popResult() {
         $("#box").show();
         $('#gif').hide();
-        $('#graphBox').show();
     }
 
 
@@ -284,6 +293,10 @@
             labels: hourLabel,
             datasets: [{
                 label: "Humidity",
+                borderWidth: 1,
+                borderColor: "green",
+                backgroundColor: "#04bd0a59",
+                scaleStepWidth: 1,
                 data: humValue,
                 fill: true,
             }]
@@ -302,8 +315,12 @@
             },
             scales: {
                 yAxes: [{
+                    gridLines: {
+                        color: "black",
+                    },
                     ticks: {
                         beginAtZero: false,
+                        fontColor: 'black',
 
                     },
                     scaleLabel: {
@@ -313,6 +330,12 @@
                     }
                 }],
                 xAxes: [{
+                    gridLines: {
+                        color: "black",
+                    },
+                    ticks: {
+                        fontColor: 'black',
+                    },
                     scaleLabel: {
                         display: true,
                         labelString: "Time in 24-hour",
@@ -322,7 +345,8 @@
             },
             title: {
                 display: true,
-                text: 'The average change of humidity at ' + day + "/" + month + "/" + year
+                text: 'The average change of humidity at ' + day + "/" + month + "/" + year,
+                fontColor: "black",
             }
 
         };
