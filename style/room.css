@@ -1,4 +1,7 @@
-
+body{
+    margin:0;
+    padding:0;
+}
 #house {
     display: block;
     border: none;
@@ -29,15 +32,22 @@
     height: 150px;
     margin: 30px auto;
 }
+#bed{
+    position: absolute;
+    width: 350px;
+    height: 250px;
+    bottom: 0;
+    left:0;
+    margin:0;
+}
 
 #light {
     width: 250px;
     height: 350px;
     position: absolute;
     bottom: 0;
-    left:0;
+    right:0;
     margin:0;
-    border: 1px solid black;
 }
 
 .speed1 {

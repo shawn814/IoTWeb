@@ -107,7 +107,7 @@
 <body>
 
     <div id="box">
-        <h1 style="text-align: center;">Temperature Report</h1>
+        <h1 style="text-align: center;">Humidity Report</h1>
         <div id="form">
             <label>Choose your date</label>
             <!-- <select id="day">
@@ -132,7 +132,7 @@
     // filter the date
     var database = firebase.database();
     // var tempValue = {}, humValue = {}, light = {};
-    var tempValue = [];
+    var humValue = [];
     var hourLabel = [];
     var data = {};
 
@@ -187,7 +187,7 @@
                 var a = database.ref().child('/PI_01_' + dateInput);
                 a.once("value", function (snapshot) {
                     snapshot.forEach(function (child) {
-                        var temp = count = 0;
+                        var hum = count = 0;
                         var hr = "";
                         if (child.key == 23)
                             hourLabel.push(child.key + "00 - " + "0000");
@@ -212,13 +212,13 @@
                                 }
                                 if (typeof data[child.key][minuteSecond] !== 'undefined') {
                                     if (data[child.key][minuteSecond].tempe != "" || data[child.key][minuteSecond].humid != "") {
-                                        temp += parseInt(data[child.key][minuteSecond].tempe);
+                                        hum += parseInt(data[child.key][minuteSecond].humid);
                                         count++;
                                     }
                                 }
                             }
                         }
-                        tempValue.push(Math.round(temp / count));
+                        humValue.push(Math.round(hum / count));
                     });
                     draw();
                     popResult()
@@ -259,8 +259,8 @@
         var data = {
             labels: hourLabel,
             datasets: [{
-                label: "Temperature",
-                data: tempValue,
+                label: "Humidity",
+                data: humValue,
                 fill: true,
             }]
         };
@@ -284,7 +284,7 @@
                     },
                     scaleLabel: {
                         display: true,
-                        labelString: "Temperature in " + String.fromCharCode(8451),
+                        labelString: "Humidity ",
                         fontColor: "red"
                     }
                 }],
@@ -298,7 +298,7 @@
             },
             title: {
                 display: true,
-                text: 'The average change of temperature at ' + day + "/" + month + "/" + year
+                text: 'The average change of humidity at ' + day + "/" + month + "/" + year
             }
 
         };
