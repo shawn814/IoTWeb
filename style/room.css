@@ -8,7 +8,11 @@ body{
     margin: 0 auto;
     width: 80%;
     height: 650px;
-    position: relative;
+    position: relative;    
+    background: url(../img/room_environment.jpg);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 100% 100%;
 }
 
 .inline>* {
@@ -24,7 +28,6 @@ body{
     color: white;
     background-color: green;
 }
-
 
 #fan {
     display: block;
@@ -116,6 +119,21 @@ body{
 
 .background5 {
     background-color: #00000244;
+}
+
+#loading {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#loading p {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 30px;
+    font-weight: bold;
 }
 
 @keyframes rotation {

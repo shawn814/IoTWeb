@@ -29,25 +29,17 @@
         </div>
         <img src="img/fan.svg" id="fan">
         <img src="img/bed.png" id="bed">
-        <!-- <img src="img/light.svg" id="light"> -->
         <img src="img/light2.png" id="light">
-
-
     </div>
-    <!-- <video id="emergen" autoplay="true" loop controls>
-        <source src="emergency.mp3" type="audio/mpeg">
-        Your browser does not support audio in video tag.
-    </video> -->
-    <!-- <video
-        src="emergency.mp3" autoplay="true"
-        muted=""></video>
-    <audio id="emergen">
-        <source src="emergency.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio> -->
+
+    <div id="loading">
+        <img src="img/loading_block.gif" alt="loading">
+        <p>Loading...</p>
+    </div>
 
     <script>
-
+        $("#house").show();
+        $("#loading").hide();
 
         const app1 = firebase.initializeApp({
             databaseURL: "https://iotass-767a5.firebaseio.com"
@@ -57,15 +49,13 @@
             databaseURL: "https://bait2123-202003-02.firebaseio.com"
         }, 'app2');
 
-        let roomId = 1;
         let searchParams = new URLSearchParams(window.location.search);
-        let key = searchParams.has('roomId') ? searchParams.get('roomId') : "";
-        if (key == "") {
+        let roomId = searchParams.has('roomId') ? searchParams.get('roomId') : 0;
+
+        if (roomId == 0) {
             window.location = "door.html";
         }
-        else {
-            roomId = key.toString();
-        }
+
         // Get the default database instance for an app1
         var database = firebase.database();
         var a = database.ref().child("/Room");
@@ -92,6 +82,7 @@
         let temp = database.ref("/Room/" + roomId + "/temp");
         let hum = database.ref("/Room/" + roomId + "/hum");
         let intensity = database.ref("/Room/" + roomId + "/lightIntensity");
+        let door = database.ref("/Room/" + roomId + "/door");
         let humidityData = 0;
         let temperatureData = 0;
         let autoFanValue = false;
