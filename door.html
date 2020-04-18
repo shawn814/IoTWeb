@@ -96,7 +96,6 @@
             });
 
             $(document).on('click', '.door.close', function (e) {
-                console.log("test");
                 $(this).find('.indicator').removeClass('redlight');
                 setTimeout(() => {
                     $(this).find('.indicator').toggleClass('redlight');
