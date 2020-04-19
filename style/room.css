@@ -60,6 +60,22 @@ body {
     right: 10px;
 }
 
+#exit {
+    top: 20px;
+    left: 20px;
+    position: absolute;
+    display: block;
+    padding: 10px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 5px black;
+    transition-duration: 0.2s;
+}
+
+#exit:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
 .speed1 {
     animation: rotation 1s infinite linear;
 }
@@ -102,30 +118,6 @@ body {
 
 .light5 {
     background-color: #FFF60D;
-}
-
-.background0 {
-    background-color: #000002e3;
-}
-
-.background1 {
-    background-color: #000002b0;
-}
-
-.background2 {
-    background-color: #0000029d;
-}
-
-.background3 {
-    background-color: #00000286;
-}
-
-.background4 {
-    background-color: #00000257;
-}
-
-.background5 {
-    background-color: #00000244;
 }
 
 #loading {
