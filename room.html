@@ -38,7 +38,7 @@
         <img src="img/loading_block.gif" alt="loading">
         <p>Loading...</p>
     </div>
-    <audio id="#emergen" src="audio/emergency.mp3" type="mpeg"></audio>
+    <audio id="emergen" src="audio/emergency.mp3"></audio>
 
     <script>
         $("#house").hide();
@@ -116,7 +116,6 @@
             else light_level = 5
 
             light_level = parseInt(p / 255 * 100);
-            console.log(light_level);
             $("#room_bg").css('filter', `brightness(${light_level}%)`);
 
             $('#light').removeClass().addClass('light' + light_level);  // adjust light level
@@ -169,7 +168,6 @@
         soundSen.on('value', function (snapshot) {
             if (snapshot.val() == null || snapshot.val() == "") {
                 gotSoundData = false;
-                console.log("Hey");
             }
             else {
                 gotTempData = true;
@@ -182,7 +180,9 @@
             var s = snapshot.val();
             var background = 0;
             var text = "";
+
             $("#house").removeClass();
+
             if (s > 400) background = 5;
             else if (s > 300) background = 4;
             else if (s > 200) background = 3;
