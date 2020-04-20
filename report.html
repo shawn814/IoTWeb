@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Temperature Report</title>
+    <title>Temperature and  Humidity Report</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-database.js"></script>
@@ -13,6 +13,7 @@
         body {
             position: relative;
         }
+
 
         * {
             margin: 0;
@@ -79,7 +80,7 @@
         }
 
         #btn:hover {
-            background-color: rgb(18, 170, 23);
+            background-color: rgb(35, 182, 40);
         }
 
         #gif {
@@ -87,7 +88,7 @@
             background-position: center center;
             background-repeat: no-repeat;
             background-size: cover;
-            background-image: url(loading2.gif);
+            background-image: url(img/loading2.gif);
             height: 100%;
             width: 100%;
             position: absolute;
@@ -103,7 +104,7 @@
 
         #graphBox {
             position: relative;
-            height:550px;
+            height: 550px;
         }
 
         #download {
@@ -115,7 +116,8 @@
             border-radius: 10px;
             background-color: lightblue;
         }
-        #download img{
+
+        #download img {
             width: 50px;
             height: 50px;
         }
@@ -125,7 +127,7 @@
 <body>
 
     <div id="box">
-        <h1 style="text-align: center;">Temperature Report</h1>
+        <h1 style="text-align: center;">Temperature and Humidity Report</h1>
         <div id="form">
             <label>Choose your date</label>
             <!-- <select id="day">
@@ -139,8 +141,7 @@
     <div id="gif"></div>
     <div id="bg"></div>
     <div id="graphBox">
-        <a id="download" download="temperatureReport.jpg" href=""
-            title="Download Chart">
+        <a id="download" download="TemperatureAndHumidityReport.jpg" href="" title="Download Chart">
             <img src="img/download.svg" alt="">
         </a>
         <canvas id="myChart"></canvas>
@@ -155,26 +156,17 @@
     // filter the date
     var database = firebase.database();
     // var tempValue = {}, humValue = {}, light = {};
-    var tempValue = [];
+    var humValue = [];
+    var tempeValue = [];
     var hourLabel = [];
     var data = {};
+	var tempData = humData = {};
 
     // For graph
     let year = "";
     let month = "";
     let day = "";
     var validInput = false;
-
-    $('#download').on("click", e => {
-        /*Get image of canvas element*/
-        var url_base64jp = document.getElementById("myChart").toDataURL("image/jpg");
-        /*get download button (tag: <a></a>) */
-        var a = document.getElementById("download");
-        /*insert chart image url to download button (tag: <a></a>) */
-        a.href = url_base64jp;
-        
-    });
-
 
     function set_body_height() { // set body height = window height
         $('body').height($(window).height());
@@ -183,10 +175,16 @@
         $(window).bind('resize', set_body_height);
         set_body_height();
     });
-
+    $('#download').on("click", e => {
+        /*Get image of canvas element*/
+        var url_base64jp = document.getElementById("myChart").toDataURL("image/jpg");
+        /*get download button (tag: <a></a>) */
+        var a = document.getElementById("download");
+        /*insert chart image url to download button (tag: <a></a>) */
+        a.href = url_base64jp;  
+    });
     $('#btn').on('click', e => {
         var date = new Date($('#myDate').val());
-
         var aDay = date.getDate();
         var aMonth = date.getMonth() + 1;
         var aYear = date.getFullYear();
@@ -221,7 +219,7 @@
                 var a = database.ref().child('/PI_01_' + dateInput);
                 a.once("value", function (snapshot) {
                     snapshot.forEach(function (child) {
-                        var temp = count = 0;
+                        var hum = temp = count = 0;
                         var hr = "";
                         if (child.key == 23)
                             hourLabel.push(child.key + "00 - " + "0000");
@@ -246,13 +244,15 @@
                                 }
                                 if (typeof data[child.key][minuteSecond] !== 'undefined') {
                                     if (data[child.key][minuteSecond].tempe != "" || data[child.key][minuteSecond].humid != "") {
-                                        temp += parseInt(data[child.key][minuteSecond].tempe);
+										temp += parseInt(data[child.key][minuteSecond].tempe);
+                                        hum += parseInt(data[child.key][minuteSecond].humid);
                                         count++;
                                     }
                                 }
                             }
                         }
-                        tempValue.push(Math.round(temp / count));
+						tempeValue.push(Math.round(temp / count));
+                        humValue.push(Math.round(hum / count));
                     });
                     draw();
                     $('#graphBox').show();
@@ -283,25 +283,41 @@
         $('#gif').hide();
     }
 
-
-
     function draw() {
         var canvas = document.getElementById("myChart");
 
         Chart.defaults.global.defaultFontFamily = "Lato";
         Chart.defaults.global.defaultFontSize = 18;
-
+        canvas.style.backgroundColor = '#FFF';
+        Chart.pluginService.register({
+            beforeDraw: function (chart, easing) {
+                if (chart.options.chartArea && chart.options.chartArea.backgroundColor) {
+                    var ctx = chart.chart.ctx;
+                    var chartArea = chart.chartArea;
+                    ctx.save();
+                    ctx.fillStyle = chart.options.chartArea.backgroundColor;
+                    ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+                    ctx.restore();
+                }
+            }
+        });
         var data = {
             labels: hourLabel,
             datasets: [{
-                label: "Temperature",
-                borderWidth: 1,
+                label: "Humidity",
                 borderColor: "green",
                 backgroundColor: "#04bd0a59",
-                scaleStepWidth: 1,
-                data: tempValue,
+                data: humValue,
                 fill: true,
-            }]
+            },
+            {
+                label: "Temperature",
+                borderColor: "yellow",
+                backgroundColor: "#ffef0f67",
+                data: tempeValue,
+                fill: true,
+            }
+            ]
         };
 
         var chartOptions = {
@@ -325,14 +341,9 @@
                         fontColor: 'black',
 
                     },
-                    ticks: {
-                        beginAtZero: false,
-                        fontColor: 'black',
-
-                    },
                     scaleLabel: {
                         display: true,
-                        labelString: "Temperature in " + String.fromCharCode(8451),
+                        labelString: "Humidity and Temperature in Celsius ",
                         fontColor: "red"
                     }
                 }],
@@ -352,8 +363,11 @@
             },
             title: {
                 display: true,
-                text: 'The average change of temperature at ' + day + "/" + month + "/" + year,
-                fontColor:"black",
+                text: 'The average change of temperature and humidity at ' + day + "/" + month + "/" + year,
+                fontColor: "black",
+            },
+            chartArea: {
+                backgroundColor: '#FFF',
             }
 
         };
@@ -362,10 +376,94 @@
             data: data,
             options: chartOptions
         });
-
-
+        
 
     }
+        // var ctx = document.getElementById('myChart');
+        // var myChart = new Chart(ctx, {
+        //     type: 'bar',
+        //     data: {
+        //         labels: hourLabel,
+        //         datasets: [{
+        //             label: '# Celsius',
+        //             data: tempValue,
+
+        //             borderWidth: 1
+        //         }]
+        //     },
+        //     options: {
+        //         scales: {
+        //             yAxes: [{
+        //                 ticks: {
+        //                     beginAtZero: true
+        //                 }
+        //             }]
+        //         }
+        //     }
+        // });
+    
+    // for (i = 0; i < 24; i++) {
+    //     var temp = hum = 0;
+    //     var hr = "";
+    //     if (i < 10) {
+    //         hr = "0" + i;
+    //     }
+    //     else {
+    //         hr = i.toString();
+    //     }
+    //     if (data[hr]) {
+    //         for (j = 0; j <= 59; j = j + 1) {
+    //             var minute = "";
+    //             if (j < 10) {
+    //                 minute = "0" + j;
+    //             } else {
+    //                 minute = j.toString();
+    //             }
+
+    //             for (k = 0; k < 60; k = k + 10) {
+    //                 var minuteSecond = "";
+    //                 if (k == 0) {
+    //                     minuteSecond = minute + "0" + k;
+    //                 } else {
+    //                     minuteSecond = minute + "" + k;
+    //                 }
+    //                 console.log(hr + minuteSecond);
+    //                 // var pro = data[hr][minuteSecond] || {};
+    //                 if (typeof data[hr][minuteSecond] === 'undefined'){
+    //                     console.log("undefined");
+    //                 }else{
+    //                     temp += data[hr][minuteSecond].tempe;
+    //                     hum += data[hr][minuteSecond].humid;
+    //                 }
+    //                 // if (typeof data[hr][minuteSecond].length) {
+    //                 //     temp += data[hr][minuteSecond].tempe;
+    //                 //     hum += data[hr][minuteSecond].humid;
+    //                 // }
+    //             }
+    //         }
+    //     }else{
+    //         console.log("nicholas suck");
+    //     }
+    // }
+
+
+
+
+
+
+
+        // data[hr].forEach(element => {
+        //     console.log(element.humid);
+        // });
+        // tempValue.push(temp);
+        // humValue.push(hum);
+        // console.log(tempValue[i])
+        // console.log("-------------------------");
+        // conclude the hr 
+
+
+    // }
+        // $.each(data, function (index,value) { console.log(index + ": " + value); });
 
 
 </script>
