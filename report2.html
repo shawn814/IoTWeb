@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Humidity Report</title>
+    <title>Sound Noise Level Report</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-database.js"></script>
@@ -88,7 +88,7 @@
             background-position: center center;
             background-repeat: no-repeat;
             background-size: cover;
-            background-image: url(loading2.gif);
+            background-image: url(img/loading2.gif);
             height: 100%;
             width: 100%;
             position: absolute;
@@ -127,7 +127,7 @@
 <body>
 
     <div id="box">
-        <h1 style="text-align: center;">Humidity Report</h1>
+        <h1 style="text-align: center;">Sound Report</h1>
         <div id="form">
             <label>Choose your date</label>
             <!-- <select id="day">
@@ -141,7 +141,7 @@
     <div id="gif"></div>
     <div id="bg"></div>
     <div id="graphBox">
-        <a id="download" download="HumidityReport.jpg" href="" title="Download Chart">
+        <a id="download" download="SoundReport.jpg" href="" title="Download Chart">
             <img src="img/download.svg" alt="">
         </a>
         <canvas id="myChart"></canvas>
@@ -156,7 +156,7 @@
     // filter the date
     var database = firebase.database();
     // var tempValue = {}, humValue = {}, light = {};
-    var humValue = [];
+    var soundValue = [];
     var hourLabel = [];
     var data = {};
 
@@ -181,7 +181,7 @@
         var a = document.getElementById("download");
         /*insert chart image url to download button (tag: <a></a>) */
         a.href = url_base64jp;
-        
+
     });
     $('#btn').on('click', e => {
         var date = new Date($('#myDate').val());
@@ -189,7 +189,7 @@
         var aMonth = date.getMonth() + 1;
         var aYear = date.getFullYear();
         // C:/Users/Shawn/Desktop/webIOT/report.html?day=04&month=04&year=2020
-        window.location = "report.html?day=" + aDay + "&month=" + aMonth + "&year=" + aYear;
+        window.location = "report2.html?day=" + aDay + "&month=" + aMonth + "&year=" + aYear;
     });
     // check url
     $("#box").hide();
@@ -219,7 +219,7 @@
                 var a = database.ref().child('/PI_01_' + dateInput);
                 a.once("value", function (snapshot) {
                     snapshot.forEach(function (child) {
-                        var hum = count = 0;
+                        var sound = count = 0;
                         var hr = "";
                         if (child.key == 23)
                             hourLabel.push(child.key + "00 - " + "0000");
@@ -243,14 +243,14 @@
                                     minuteSecond = minute + "" + k;
                                 }
                                 if (typeof data[child.key][minuteSecond] !== 'undefined') {
-                                    if (data[child.key][minuteSecond].tempe != "" || data[child.key][minuteSecond].humid != "") {
-                                        hum += parseInt(data[child.key][minuteSecond].humid);
+                                    if (data[child.key][minuteSecond].sound != "") {
+                                        sound += parseInt(data[child.key][minuteSecond].sound);
                                         count++;
                                     }
                                 }
                             }
                         }
-                        humValue.push(Math.round(hum / count));
+                        soundValue.push(Math.round(sound / count));
                     });
                     draw();
                     $('#graphBox').show();
@@ -281,27 +281,36 @@
         $('#gif').hide();
     }
 
-
-
     function draw() {
         var canvas = document.getElementById("myChart");
-
         Chart.defaults.global.defaultFontFamily = "Lato";
         Chart.defaults.global.defaultFontSize = 18;
+        canvas.style.backgroundColor = '#FFF';
+        Chart.pluginService.register({
+            beforeDraw: function (chart, easing) {
+                if (chart.options.chartArea && chart.options.chartArea.backgroundColor) {
+                    var ctx = chart.chart.ctx;
+                    var chartArea = chart.chartArea;
+                    ctx.save();
+                    ctx.fillStyle = chart.options.chartArea.backgroundColor;
+                    ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+                    ctx.restore();
+                }
+            }
+        });
 
         var data = {
             labels: hourLabel,
             datasets: [{
-                label: "Humidity",
+                label: "Sound",
                 borderWidth: 1,
                 borderColor: "green",
                 backgroundColor: "#04bd0a59",
                 scaleStepWidth: 1,
-                data: humValue,
+                data: soundValue,
                 fill: true,
             }]
         };
-
         var chartOptions = {
             responsive: true,
             maintainAspectRatio: false,
@@ -310,31 +319,31 @@
                 position: 'top',
                 labels: {
                     boxWidth: 80,
-                    fontColor: 'black'
+                    fontColor: 'grey'
                 }
             },
             scales: {
                 yAxes: [{
                     gridLines: {
-                        color: "black",
+                        color: "grey",
                     },
                     ticks: {
                         beginAtZero: false,
-                        fontColor: 'black',
+                        fontColor: 'grey',
 
                     },
                     scaleLabel: {
                         display: true,
-                        labelString: "Humidity ",
+                        labelString: "Sound Level ",
                         fontColor: "red"
                     }
                 }],
                 xAxes: [{
                     gridLines: {
-                        color: "black",
+                        color: "grey",
                     },
                     ticks: {
-                        fontColor: 'black',
+                        fontColor: 'grey',
                     },
                     scaleLabel: {
                         display: true,
@@ -345,10 +354,12 @@
             },
             title: {
                 display: true,
-                text: 'The average change of humidity at ' + day + "/" + month + "/" + year,
-                fontColor: "black",
+                text: 'The sound noise level at ' + day + "/" + month + "/" + year,
+                fontColor: "grey",
+            },
+            chartArea: {
+                backgroundColor: '#FFF',
             }
-
         };
         var lineChart = new Chart(canvas, {
             type: 'line',
@@ -356,7 +367,7 @@
             options: chartOptions
         });
 
-
+    }
 
         // var ctx = document.getElementById('myChart');
         // var myChart = new Chart(ctx, {
@@ -380,7 +391,7 @@
         //         }
         //     }
         // });
-    }
+    
     // for (i = 0; i < 24; i++) {
     //     var temp = hum = 0;
     //     var hr = "";
