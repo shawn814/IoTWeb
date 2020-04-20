@@ -27,6 +27,7 @@
                 <div id="temp-level"></div>
                 <div id="intensity-level"></div>
                 <div id="hum-level"></div>
+                <div id="sound-level"></div>
             </div>
             <a id="exit" href="door.html"><img src="img/exit.png" alt="exit" width="50" height="50"></a>
             <img src="img/fan.svg" id="fan">
@@ -71,6 +72,7 @@
             let temp = database.ref("/Room/" + roomId + "/temp");
             let hum = database.ref("/Room/" + roomId + "/hum");
             let intensity = database.ref("/Room/" + roomId + "/lightIntensity");
+            let soundSen = database.ref("/Room/" + roomId + "/sound");
             let door = database.ref("/Room/" + roomId + "/door");
             let humidityData = 0;
             let temperatureData = 0;
@@ -79,6 +81,7 @@
             let gotIntensityData = true;
             let gotTempData = true;
             let gotHumData = true;
+            let gotSoundData = true;
             let emergencySound = false;
             let sound = $('#emergen');
 
@@ -162,6 +165,16 @@
                     warning(snapshot.val());
                 }
             });
+            soundSen.on('value', function (snapshot) {
+                if (snapshot.val() == null || snapshot.val() == "") {
+                    gotSoundData = false;
+                    console.log("Hey");
+                }
+                else {
+                    gotTempData = true;
+                    $("#sound-level").text("Sound Level: " + snapshot.val());
+                }
+            });
 
             intensity.on('value', function (snapshot) {
                 var q = autoLight(snapshot.val());
@@ -218,6 +231,10 @@
                     if (!gotHumData) {
                         $('#hum-level').text('Humidity: ' + object.val().humid);
                     }
+                    if(!gotSoundData){
+                        console.log("wakawaka")
+                        $('#sound-level').text("Sound: " + object.val().sound);
+                    }
                 });
             }, 1000);
 
@@ -245,7 +262,7 @@
             function warning(p) {
 
                 // var celsius = parseInt(p);
-                if (p >= 39) {
+                if (p >= 40) {
                     $('#box').css("background-color", "red");
                     // if (emergencySound == false) {
                     //     emergencySound = true;

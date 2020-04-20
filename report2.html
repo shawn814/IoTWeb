@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sound Report</title>
+    <title>Sound Noise Level Report</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-database.js"></script>
@@ -319,17 +319,17 @@
                 position: 'top',
                 labels: {
                     boxWidth: 80,
-                    fontColor: 'black'
+                    fontColor: 'grey'
                 }
             },
             scales: {
                 yAxes: [{
                     gridLines: {
-                        color: "black",
+                        color: "grey",
                     },
                     ticks: {
                         beginAtZero: false,
-                        fontColor: 'black',
+                        fontColor: 'grey',
 
                     },
                     scaleLabel: {
@@ -340,10 +340,10 @@
                 }],
                 xAxes: [{
                     gridLines: {
-                        color: "black",
+                        color: "grey",
                     },
                     ticks: {
-                        fontColor: 'black',
+                        fontColor: 'grey',
                     },
                     scaleLabel: {
                         display: true,
@@ -354,8 +354,8 @@
             },
             title: {
                 display: true,
-                text: 'The average change of sound at ' + day + "/" + month + "/" + year,
-                fontColor: "black",
+                text: 'The sound noise level at ' + day + "/" + month + "/" + year,
+                fontColor: "grey",
             },
             chartArea: {
                 backgroundColor: '#FFF',
@@ -367,7 +367,7 @@
             options: chartOptions
         });
 
-
+    }
 
         // var ctx = document.getElementById('myChart');
         // var myChart = new Chart(ctx, {
@@ -391,7 +391,7 @@
         //         }
         //     }
         // });
-    }
+    
     // for (i = 0; i < 24; i++) {
     //     var temp = hum = 0;
     //     var hr = "";
