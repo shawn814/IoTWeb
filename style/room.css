@@ -22,6 +22,8 @@ body {
 #room_bg {
     z-index: -99;
     height: 100%;
+    max-width: 100%;
+    object-fit: contain;
 }
 
 .inline>* {
@@ -40,6 +42,7 @@ body {
     left: 10px;
     bottom: 10px;
     font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
 }
 
 #fan {
@@ -94,30 +97,6 @@ body {
 
 .speed5 {
     animation: rotation 0.1s infinite linear;
-}
-
-.light0 {
-    background-color: #5C5905;
-}
-
-.light1 {
-    background-color: #7A7606;
-}
-
-.light2 {
-    background-color: #A6A008;
-}
-
-.light3 {
-    background-color: #BAB309;
-}
-
-.light4 {
-    background-color: #DED60B;
-}
-
-.light5 {
-    background-color: #FFF60D;
 }
 
 #loading {

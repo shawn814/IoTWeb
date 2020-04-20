@@ -112,10 +112,7 @@
                 else light_level = 5
 
                 light_level = parseInt(p / 255 * 100);
-                console.log(light_level);
                 $("#room_bg").css('filter', `brightness(${light_level}%)`);
-
-                $('#light').removeClass().addClass('light' + light_level);  // adjust light level
 
                 power.val() == null ? $('#light-level').text("Light: Error") : $('#light-level').text(`Light: ${light_level}%`);  // display light level
             });
@@ -219,6 +216,8 @@
                         $('#hum-level').text('Humidity: ' + object.val().humid);
                     }
                 });
+
+                console.log("/PI_01_2020" + month + day + "/" + hour)
             }, 1000);
 
 
