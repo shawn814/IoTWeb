@@ -83,7 +83,7 @@
             let gotHumData = true;
             let gotSoundData = true;
             let emergencySound = false;
-            let sound = $('#emergen');
+            let alarm = $('#emergen')[0];
 
             if (roomId == 0) window.location = "door.html";
 
@@ -264,14 +264,15 @@
                 // var celsius = parseInt(p);
                 if (p >= 40) {
                     $('#box').css("background-color", "red");
-                    // if (emergencySound == false) {
-                    //     emergencySound = true;
-                    //     // sound.play();
-                    //     sound.removeAttr('muted');
-                    // }
+                    if (emergencySound == false) {
+                        emergencySound = true;
+                        alarm.play();
+                        // sound.removeAttr('muted');
+                    }
                 } else {
                     $('#box').removeAttr('Style');
-                    // emergencySound = false;
+                    emergencySound = false;
+                    alarm.pause();
                     // sound.attr('muted', "");
                 }
             }
