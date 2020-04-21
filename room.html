@@ -49,8 +49,8 @@
         <audio id="emergen" src="audio/emergency.mp3"></audio>
 
         <script>
-            $("#house").show();
-            $("#loading").hide();
+            $("#house").hide();
+            $("#loading").show();
 
             // Initial connection and data --------------------------------------------------------------
             const app1 = firebase.initializeApp({
@@ -97,18 +97,18 @@
 
             if (roomId == 0) window.location = "door.html";
 
-            // // If the room id is fake
-            // database.ref("/Room").once("value", function (rooms) {
-            //     let verifyId = false;
-            //     rooms.forEach(function (room) { if (roomId == room.key && (room.child("door").val() == 1)) verifyId = true; });
-            //     if (!verifyId) window.location = "door.html";
-            //     else door.set(0);
-            // });
+            // If the room id is fake
+            database.ref("/Room").once("value", function (rooms) {
+                let verifyId = false;
+                rooms.forEach(function (room) { if (roomId == room.key && (room.child("door").val() == 1)) verifyId = true; });
+                if (!verifyId) window.location = "door.html";
+                else door.set(0);
+            });
 
             // Check connection
             database1.ref().once("value", function (e) {
-                // $("#house").fadeIn();
-                // $("#loading").fadeOut();
+                $("#house").fadeIn();
+                $("#loading").fadeOut();
             });
 
             // Listener event -------------------------------------------------------------------
