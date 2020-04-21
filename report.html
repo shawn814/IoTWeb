@@ -1,383 +1,374 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Temperature and  Humidity Report</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-database.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
-    <link rel="shortcut icon" href="room.svg" type="image/x-icon">
-    <style>
-        body {
-            position: relative;
-        }
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Temperature and Humidity Report</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-database.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+        <link rel="shortcut icon" href="img/room.svg" type="image/x-icon">
+        <style>
+            body {
+                position: relative;
+            }
 
+            * {
+                margin: 0;
+                padding: 0;
+            }
 
-        * {
-            margin: 0;
-            padding: 0;
-        }
+            #mychart {
+                padding: 50px;
+            }
 
-        #mychart {
-            padding: 50px;
-        }
+            #box {
+                width: 30%;
+                padding: 10px;
+                display: block;
+                background-color: rgba(8, 112, 184, 0.7);
+                color: white;
+                border-radius: 25px;
+                box-shadow: -10px -10px 30px 4px rgba(0, 0, 0, 0.1),
+                            10px 10px 30px 4px rgba(45, 78, 255, 0.15);
 
-        #box {
-            width: 30%;
-            padding: 10px;
-            display: block;
-            background-color: rgba(8, 112, 184, 0.7);
-            color: white;
-            border-radius: 25px;
-            box-shadow: -10px -10px 30px 4px rgba(0, 0, 0, 0.1),
-                10px 10px 30px 4px rgba(45, 78, 255, 0.15);
+            }
 
-        }
+            .boxCenter {
+                height: 150px;
+                width: 100px;
+                position: absolute;
+                padding: 50px;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
 
-        .boxCenter {
-            height: 150px;
-            width: 100px;
-            position: absolute;
-            padding: 50px;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            /* box-shadow: 0 20px 50px rgba(8, 112, 184, 0.7); */
+            #bg {
+                background-attachment: fixed;
+                background-position: center center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-image: linear-gradient(#868f96, #596164);
+                height: 100%;
+                width: 100%;
+                position: absolute;
+                z-index: -1;
+                margin: 0;
+            }
 
-        }
+            #btn {
+                background-color: #4CAF50;
+                border-radius: 12px;
+                color: white;
+                padding: 10px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+                outline: 0;
+                border: 0;
+            }
 
-        #bg {
-            background-attachment: fixed;
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-image: linear-gradient(#868f96, #596164);
-            height: 100%;
-            width: 100%;
-            position: absolute;
-            z-index: -1;
-            margin: 0;
-        }
+            #btn:hover {
+                background-color: rgb(35, 182, 40);
+            }
 
-        #btn {
-            background-color: #4CAF50;
-            /* Green */
-            border-radius: 12px;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            outline: 0;
-            border: 0;
-        }
+            #gif {
+                background-attachment: fixed;
+                background-position: center center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-image: url(img/loading2.gif);
+                height: 100%;
+                width: 100%;
+                position: absolute;
+                z-index: -1;
+                margin: 0;
+            }
 
-        #btn:hover {
-            background-color: rgb(35, 182, 40);
-        }
+            #form {
+                display: block;
+                width: max-content;
+                margin: 10px auto;
+            }
 
-        #gif {
-            background-attachment: fixed;
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-image: url(img/loading2.gif);
-            height: 100%;
-            width: 100%;
-            position: absolute;
-            z-index: -1;
-            margin: 0;
-        }
+            #graphBox {
+                position: relative;
+                height: 550px;
+            }
 
-        #form {
-            display: block;
-            width: max-content;
-            margin: 10px auto;
-        }
+            #download {
+                position: absolute;
+                width: 50px;
+                height: 50px;
+                top: 0;
+                right: 10px;
+                border-radius: 10px;
+                background-color: lightblue;
+            }
 
-        #graphBox {
-            position: relative;
-            height: 550px;
-        }
+            #download img {
+                width: 50px;
+                height: 50px;
+            }
+        </style>
+    </head>
 
-        #download {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            top: 0;
-            right: 10px;
-            border-radius: 10px;
-            background-color: lightblue;
-        }
+    <body>
 
-        #download img {
-            width: 50px;
-            height: 50px;
-        }
-    </style>
-</head>
-
-<body>
-
-    <div id="box">
-        <h1 style="text-align: center;">Temperature and Humidity Report</h1>
-        <div id="form">
-            <label>Choose your date</label>
-            <!-- <select id="day">
-        </select>
-        <select id="month"></select>
-        <select id="year"></select> -->
-            <input type="date" id="myDate">
-            <button id="btn">Generate</button>
+        <div id="box">
+            <h1 style="text-align: center;">Temperature and Humidity Report</h1>
+            <div id="form">
+                <label>Choose your date</label>
+                <input type="date" id="myDate">
+                <button id="btn">Generate</button>
+            </div>
         </div>
-    </div>
-    <div id="gif"></div>
-    <div id="bg"></div>
-    <div id="graphBox">
-        <a id="download" download="TemperatureAndHumidityReport.jpg" href="" title="Download Chart">
-            <img src="img/download.svg" alt="">
-        </a>
-        <canvas id="myChart"></canvas>
-    </div>
-</body>
-<script>
-    firebase.initializeApp({
-        databaseURL: "https://bait2123-202003-02.firebaseio.com"
-        // https://bait2123-202003-01.firebaseio.com/
-    });
+        <div id="gif"></div>
+        <div id="bg"></div>
+        <div id="graphBox">
+            <a id="download" download="TemperatureAndHumidityReport.jpg" href="" title="Download Chart">
+                <img src="img/download.svg" alt="">
+            </a>
+            <canvas id="myChart"></canvas>
+        </div>
+    </body>
+    <script>
+        firebase.initializeApp({
+            databaseURL: "https://bait2123-202003-02.firebaseio.com"
+        });
 
-    // filter the date
-    var database = firebase.database();
-    // var tempValue = {}, humValue = {}, light = {};
-    var humValue = [];
-    var tempeValue = [];
-    var hourLabel = [];
-    var data = {};
-	var tempData = humData = {};
+        // filter the date
+        var database = firebase.database();
+        // var tempValue = {}, humValue = {}, light = {};
+        var humValue = [];
+        var tempeValue = [];
+        var hourLabel = [];
+        var data = {};
+        var tempData = humData = {};
 
-    // For graph
-    let year = "";
-    let month = "";
-    let day = "";
-    var validInput = false;
+        // For graph
+        let year = "";
+        let month = "";
+        let day = "";
+        var validInput = false;
 
-    function set_body_height() { // set body height = window height
-        $('body').height($(window).height());
-    }
-    $(document).ready(function () {
-        $(window).bind('resize', set_body_height);
-        set_body_height();
-    });
-    $('#download').on("click", e => {
-        /*Get image of canvas element*/
-        var url_base64jp = document.getElementById("myChart").toDataURL("image/jpg");
-        /*get download button (tag: <a></a>) */
-        var a = document.getElementById("download");
-        /*insert chart image url to download button (tag: <a></a>) */
-        a.href = url_base64jp;  
-    });
-    $('#btn').on('click', e => {
-        var date = new Date($('#myDate').val());
-        var aDay = date.getDate();
-        var aMonth = date.getMonth() + 1;
-        var aYear = date.getFullYear();
-        // C:/Users/Shawn/Desktop/webIOT/report.html?day=04&month=04&year=2020
-        window.location = "report.html?day=" + aDay + "&month=" + aMonth + "&year=" + aYear;
-    });
-    // check url
-    $("#box").hide();
-    $('#bg').hide();
-    $('#graphBox').hide();
-    let searchParams = new URLSearchParams(window.location.search);
-    var tempDay = searchParams.has('day') ? searchParams.get('day') : "";
-    var tempMonth = searchParams.has('month') ? searchParams.get('month') : "";
-    year = searchParams.has('year') ? searchParams.get('year') : "";
-    if (tempDay != "" && tempMonth != "" && year != "") {
-        // check date got inside database
-        day = ("0" + tempDay).slice(-2);
-        month = ("0" + tempMonth).slice(-2);
-        var dateInput = year + month + day;
-        $('#myDate').val(year + '-' + (month) + '-' + (day));
-        var date = database.ref();
-        date.once("value", function (snapshot) {
-            snapshot.forEach(function (child) {
-                var tempDate = child.key.substr(child.key.length - 8);
-                if (dateInput.localeCompare(tempDate) == 0) {
-                    validInput = true;
-                    // console.log("Got");
-                }
-            });
-            // if got data after valid() turn it to true
-            if (validInput) {
-                var a = database.ref().child('/PI_01_' + dateInput);
-                a.once("value", function (snapshot) {
-                    snapshot.forEach(function (child) {
-                        var hum = temp = count = 0;
-                        var hr = "";
-                        if (child.key == 23)
-                            hourLabel.push(child.key + "00 - " + "0000");
-                        else {
-                            let nextChild = "0" + (parseInt(child.key) + 1) + "00";
-                            hourLabel.push(child.key + "00 - " + nextChild.slice(-4));
-                        }
-                        data[child.key] = child.val();
-                        for (j = 0; j <= 59; j = j + 1) {
-                            var minute = "";
-                            if (j < 10) {
-                                minute = "0" + j;
-                            } else {
-                                minute = j.toString();
+        function set_body_height() { // set body height = window height
+            $('body').height($(window).height());
+        }
+        $(document).ready(function () {
+            $(window).bind('resize', set_body_height);
+            set_body_height();
+        });
+        $('#download').on("click", e => {
+            /*Get image of canvas element*/
+            var url_base64jp = document.getElementById("myChart").toDataURL("image/jpg");
+            /*get download button (tag: <a></a>) */
+            var a = document.getElementById("download");
+            /*insert chart image url to download button (tag: <a></a>) */
+            a.href = url_base64jp;
+        });
+        $('#btn').on('click', e => {
+            var date = new Date($('#myDate').val());
+            var aDay = date.getDate();
+            var aMonth = date.getMonth() + 1;
+            var aYear = date.getFullYear();
+            // C:/Users/Shawn/Desktop/webIOT/report.html?day=04&month=04&year=2020
+            window.location = "report.html?day=" + aDay + "&month=" + aMonth + "&year=" + aYear;
+        });
+        // check url
+        $("#box").hide();
+        $('#bg').hide();
+        $('#graphBox').hide();
+        let searchParams = new URLSearchParams(window.location.search);
+        var tempDay = searchParams.has('day') ? searchParams.get('day') : "";
+        var tempMonth = searchParams.has('month') ? searchParams.get('month') : "";
+        year = searchParams.has('year') ? searchParams.get('year') : "";
+        if (tempDay != "" && tempMonth != "" && year != "") {
+            // check date got inside database
+            day = ("0" + tempDay).slice(-2);
+            month = ("0" + tempMonth).slice(-2);
+            var dateInput = year + month + day;
+            $('#myDate').val(year + '-' + (month) + '-' + (day));
+            var date = database.ref();
+            date.once("value", function (snapshot) {
+                snapshot.forEach(function (child) {
+                    var tempDate = child.key.substr(child.key.length - 8);
+                    if (dateInput.localeCompare(tempDate) == 0) {
+                        validInput = true;
+                        // console.log("Got");
+                    }
+                });
+                // if got data after valid() turn it to true
+                if (validInput) {
+                    var a = database.ref().child('/PI_01_' + dateInput);
+                    a.once("value", function (snapshot) {
+                        snapshot.forEach(function (child) {
+                            var hum = temp = count = 0;
+                            var hr = "";
+                            if (child.key == 23)
+                                hourLabel.push(child.key + "00 - " + "0000");
+                            else {
+                                let nextChild = "0" + (parseInt(child.key) + 1) + "00";
+                                hourLabel.push(child.key + "00 - " + nextChild.slice(-4));
                             }
-                            for (k = 0; k < 60; k = k + 10) {
-                                var minuteSecond = "";
-                                if (k == 0) {
-                                    minuteSecond = minute + "0" + k;
+                            data[child.key] = child.val();
+                            for (j = 0; j <= 59; j = j + 1) {
+                                var minute = "";
+                                if (j < 10) {
+                                    minute = "0" + j;
                                 } else {
-                                    minuteSecond = minute + "" + k;
+                                    minute = j.toString();
                                 }
-                                if (typeof data[child.key][minuteSecond] !== 'undefined') {
-                                    if (data[child.key][minuteSecond].tempe != "" || data[child.key][minuteSecond].humid != "") {
-										temp += parseInt(data[child.key][minuteSecond].tempe);
-                                        hum += parseInt(data[child.key][minuteSecond].humid);
-                                        count++;
+                                for (k = 0; k < 60; k = k + 10) {
+                                    var minuteSecond = "";
+                                    if (k == 0) {
+                                        minuteSecond = minute + "0" + k;
+                                    } else {
+                                        minuteSecond = minute + "" + k;
+                                    }
+                                    if (typeof data[child.key][minuteSecond] !== 'undefined') {
+                                        if (data[child.key][minuteSecond].tempe != "" || data[child.key][minuteSecond].humid != "") {
+                                            temp += parseInt(data[child.key][minuteSecond].tempe);
+                                            hum += parseInt(data[child.key][minuteSecond].humid);
+                                            count++;
+                                        }
                                     }
                                 }
                             }
-                        }
-						tempeValue.push(Math.round(temp / count));
-                        humValue.push(Math.round(hum / count));
+                            tempeValue.push(Math.round(temp / count));
+                            humValue.push(Math.round(hum / count));
+                        });
+                        draw();
+                        $('#graphBox').show();
+                        popResult()
+
                     });
-                    draw();
-                    $('#graphBox').show();
+                } else {
+                    // nothing come out
                     popResult()
-
-                });
-            } else {
-                // nothing come out
-                popResult()
-                alert("No result found");
-                console.log("No result1");
-            }
-        });
-    } else {
-        // No url
-        popResult()
-        $("#bg").show();
-        var now = new Date();
-        var tempDay = ("0" + now.getDate()).slice(-2);
-        var tempMonth = ("0" + (now.getMonth() + 1)).slice(-2);
-        var today = now.getFullYear() + "-" + (tempMonth) + "-" + (tempDay);
-        $('#box').addClass("boxCenter")
-        $('#myDate').val(today);
-        console.log("No result2");
-    }
-    function popResult() {
-        $("#box").show();
-        $('#gif').hide();
-    }
-
-    function draw() {
-        var canvas = document.getElementById("myChart");
-
-        Chart.defaults.global.defaultFontFamily = "Lato";
-        Chart.defaults.global.defaultFontSize = 18;
-        canvas.style.backgroundColor = '#FFF';
-        Chart.pluginService.register({
-            beforeDraw: function (chart, easing) {
-                if (chart.options.chartArea && chart.options.chartArea.backgroundColor) {
-                    var ctx = chart.chart.ctx;
-                    var chartArea = chart.chartArea;
-                    ctx.save();
-                    ctx.fillStyle = chart.options.chartArea.backgroundColor;
-                    ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
-                    ctx.restore();
+                    alert("No result found");
+                    console.log("No result1");
                 }
-            }
-        });
-        var data = {
-            labels: hourLabel,
-            datasets: [{
-                label: "Humidity",
-                borderColor: "green",
-                backgroundColor: "#04bd0a59",
-                data: humValue,
-                fill: true,
-            },
-            {
-                label: "Temperature",
-                borderColor: "yellow",
-                backgroundColor: "#ffef0f67",
-                data: tempeValue,
-                fill: true,
-            }
-            ]
-        };
+            });
+        } else {
+            // No url
+            popResult()
+            $("#bg").show();
+            var now = new Date();
+            var tempDay = ("0" + now.getDate()).slice(-2);
+            var tempMonth = ("0" + (now.getMonth() + 1)).slice(-2);
+            var today = now.getFullYear() + "-" + (tempMonth) + "-" + (tempDay);
+            $('#box').addClass("boxCenter")
+            $('#myDate').val(today);
+            console.log("No result2");
+        }
+        function popResult() {
+            $("#box").show();
+            $('#gif').hide();
+        }
 
-        var chartOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            legend: {
-                display: true,
-                position: 'top',
-                labels: {
-                    boxWidth: 80,
-                    fontColor: 'grey'
+        function draw() {
+            var canvas = document.getElementById("myChart");
+
+            Chart.defaults.global.defaultFontFamily = "Lato";
+            Chart.defaults.global.defaultFontSize = 18;
+            canvas.style.backgroundColor = '#FFF';
+            Chart.pluginService.register({
+                beforeDraw: function (chart, easing) {
+                    if (chart.options.chartArea && chart.options.chartArea.backgroundColor) {
+                        var ctx = chart.chart.ctx;
+                        var chartArea = chart.chartArea;
+                        ctx.save();
+                        ctx.fillStyle = chart.options.chartArea.backgroundColor;
+                        ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+                        ctx.restore();
+                    }
                 }
-            },
-            scales: {
-                yAxes: [{
-                    gridLines: {
-                        color: "grey",
-                    },
-                    ticks: {
-                        beginAtZero: false,
-                        fontColor: 'grey',
+            });
+            var data = {
+                labels: hourLabel,
+                datasets: [{
+                    label: "Humidity",
+                    borderColor: "green",
+                    backgroundColor: "#04bd0a59",
+                    data: humValue,
+                    fill: true,
+                },
+                {
+                    label: "Temperature",
+                    borderColor: "yellow",
+                    backgroundColor: "#ffef0f67",
+                    data: tempeValue,
+                    fill: true,
+                }
+                ]
+            };
 
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: "Humidity and Temperature in Celsius ",
-                        fontColor: "red"
+            var chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        boxWidth: 80,
+                        fontColor: 'grey'
                     }
-                }],
-                xAxes: [{
-                    gridLines: {
-                        color: "grey",
-                    },
-                    ticks: {
-                        fontColor: 'grey',
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: "Time in 24-hour",
-                        fontColor: "red"
-                    }
-                }]
-            },
-            title: {
-                display: true,
-                text: 'The average change of temperature and humidity at ' + day + "/" + month + "/" + year,
-                fontColor: "grey",
-            },
-            chartArea: {
-                backgroundColor: '#FFF',
-            }
+                },
+                scales: {
+                    yAxes: [{
+                        gridLines: {
+                            color: "grey",
+                        },
+                        ticks: {
+                            beginAtZero: false,
+                            fontColor: 'grey',
 
-        };
-        var lineChart = new Chart(canvas, {
-            type: 'line',
-            data: data,
-            options: chartOptions
-        });
-        
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: "Humidity and Temperature in Celsius ",
+                            fontColor: "red"
+                        }
+                    }],
+                    xAxes: [{
+                        gridLines: {
+                            color: "grey",
+                        },
+                        ticks: {
+                            fontColor: 'grey',
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: "Time in 24-hour",
+                            fontColor: "red"
+                        }
+                    }]
+                },
+                title: {
+                    display: true,
+                    text: 'The average change of temperature and humidity at ' + day + "/" + month + "/" + year,
+                    fontColor: "grey",
+                },
+                chartArea: {
+                    backgroundColor: '#FFF',
+                }
 
-    }
+            };
+            var lineChart = new Chart(canvas, {
+                type: 'line',
+                data: data,
+                options: chartOptions
+            });
+
+
+        }
         // var ctx = document.getElementById('myChart');
         // var myChart = new Chart(ctx, {
         //     type: 'bar',
@@ -400,7 +391,7 @@
         //         }
         //     }
         // });
-    
+
     // for (i = 0; i < 24; i++) {
     //     var temp = hum = 0;
     //     var hr = "";
@@ -465,6 +456,6 @@
         // $.each(data, function (index,value) { console.log(index + ": " + value); });
 
 
-</script>
+    </script>
 
 </html>

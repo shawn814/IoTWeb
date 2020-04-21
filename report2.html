@@ -9,12 +9,11 @@
     <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-database.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
-    <link rel="shortcut icon" href="room.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="img/room.svg" type="image/x-icon">
     <style>
         body {
             position: relative;
         }
-
 
         * {
             margin: 0;
@@ -126,15 +125,10 @@
 </head>
 
 <body>
-
     <div id="box">
         <h1 style="text-align: center;">Sound Report</h1>
         <div id="form">
             <label>Choose your date</label>
-            <!-- <select id="day">
-        </select>
-        <select id="month"></select>
-        <select id="year"></select> -->
             <input type="date" id="myDate">
             <button id="btn">Generate</button>
         </div>
@@ -151,12 +145,10 @@
 <script>
     firebase.initializeApp({
         databaseURL: "https://bait2123-202003-02.firebaseio.com"
-        // https://bait2123-202003-01.firebaseio.com/
     });
 
     // filter the date
     var database = firebase.database();
-    // var tempValue = {}, humValue = {}, light = {};
     var soundValue = [];
     var hourLabel = [];
     var data = {};
@@ -167,31 +159,31 @@
     let day = "";
     var validInput = false;
 
-
     function set_body_height() { // set body height = window height
         $('body').height($(window).height());
     }
+
     $(document).ready(function () {
         $(window).bind('resize', set_body_height);
         set_body_height();
     });
+
     $('#download').on("click", e => {
         /*Get image of canvas element*/
         var url_base64jp = document.getElementById("myChart").toDataURL("image/jpg");
-        /*get download button (tag: <a></a>) */
         var a = document.getElementById("download");
-        /*insert chart image url to download button (tag: <a></a>) */
         a.href = url_base64jp;
 
     });
+
     $('#btn').on('click', e => {
         var date = new Date($('#myDate').val());
         var aDay = date.getDate();
         var aMonth = date.getMonth() + 1;
         var aYear = date.getFullYear();
-        // C:/Users/Shawn/Desktop/webIOT/report.html?day=04&month=04&year=2020
         window.location = "report2.html?day=" + aDay + "&month=" + aMonth + "&year=" + aYear;
     });
+
     // check url
     $("#box").hide();
     $('#bg').hide();
@@ -212,9 +204,9 @@
                 var tempDate = child.key.substr(child.key.length - 8);
                 if (dateInput.localeCompare(tempDate) == 0) {
                     validInput = true;
-                    // console.log("Got");
                 }
             });
+
             // if got data after valid() turn it to true
             if (validInput) {
                 var a = database.ref().child('/PI_01_' + dateInput);
@@ -277,6 +269,7 @@
         $('#myDate').val(today);
         console.log("No result2");
     }
+    
     function popResult() {
         $("#box").show();
         $('#gif').hide();
@@ -367,96 +360,7 @@
             data: data,
             options: chartOptions
         });
-
     }
-
-        // var ctx = document.getElementById('myChart');
-        // var myChart = new Chart(ctx, {
-        //     type: 'bar',
-        //     data: {
-        //         labels: hourLabel,
-        //         datasets: [{
-        //             label: '# Celsius',
-        //             data: tempValue,
-
-        //             borderWidth: 1
-        //         }]
-        //     },
-        //     options: {
-        //         scales: {
-        //             yAxes: [{
-        //                 ticks: {
-        //                     beginAtZero: true
-        //                 }
-        //             }]
-        //         }
-        //     }
-        // });
-    
-    // for (i = 0; i < 24; i++) {
-    //     var temp = hum = 0;
-    //     var hr = "";
-    //     if (i < 10) {
-    //         hr = "0" + i;
-    //     }
-    //     else {
-    //         hr = i.toString();
-    //     }
-    //     if (data[hr]) {
-    //         for (j = 0; j <= 59; j = j + 1) {
-    //             var minute = "";
-    //             if (j < 10) {
-    //                 minute = "0" + j;
-    //             } else {
-    //                 minute = j.toString();
-    //             }
-
-    //             for (k = 0; k < 60; k = k + 10) {
-    //                 var minuteSecond = "";
-    //                 if (k == 0) {
-    //                     minuteSecond = minute + "0" + k;
-    //                 } else {
-    //                     minuteSecond = minute + "" + k;
-    //                 }
-    //                 console.log(hr + minuteSecond);
-    //                 // var pro = data[hr][minuteSecond] || {};
-    //                 if (typeof data[hr][minuteSecond] === 'undefined'){
-    //                     console.log("undefined");
-    //                 }else{
-    //                     temp += data[hr][minuteSecond].tempe;
-    //                     hum += data[hr][minuteSecond].humid;
-    //                 }
-    //                 // if (typeof data[hr][minuteSecond].length) {
-    //                 //     temp += data[hr][minuteSecond].tempe;
-    //                 //     hum += data[hr][minuteSecond].humid;
-    //                 // }
-    //             }
-    //         }
-    //     }else{
-    //         console.log("nicholas suck");
-    //     }
-    // }
-
-
-
-
-
-
-
-        // data[hr].forEach(element => {
-        //     console.log(element.humid);
-        // });
-        // tempValue.push(temp);
-        // humValue.push(hum);
-        // console.log(tempValue[i])
-        // console.log("-------------------------");
-        // conclude the hr 
-
-
-    // }
-        // $.each(data, function (index,value) { console.log(index + ": " + value); });
-
-
 </script>
 
 </html>
