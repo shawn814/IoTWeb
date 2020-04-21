@@ -114,13 +114,13 @@
             $(document).on('click', '.door.close', function (e) {
                 $(this).find('.indicator').removeClass('redlight');
                 setTimeout(() => {
-                    $(this).find('.indicator').toggleClass('redlight');
                     beep().play();
+                    $(this).find('.indicator').toggleClass('redlight');
                     setTimeout(() => {
                         $(this).find('.indicator').toggleClass('redlight');
                         setTimeout(() => {
-                            $(this).find('.indicator').toggleClass('redlight');
                             beep().play();
+                            $(this).find('.indicator').toggleClass('redlight');
                             setTimeout(() => {
                                 $(this).find('.indicator').toggleClass('redlight');
                             }, 100);

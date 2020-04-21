@@ -4,7 +4,7 @@
 
 body {
     margin: 0;
-    background-color: #222;
+    height: 100vh;
 }
 
 #house {
@@ -13,7 +13,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
     background-color: #333;
-    height: 100vh;
+    min-height: 100vh;
     width: 100%;
     object-fit: contain;
     margin: 0;
@@ -27,9 +27,18 @@ body {
 }
 
 #room_bg {
+    z-index: -100;
+}
+
+#light_bg {
     z-index: -99;
+}
+
+.bg {
     height: 100%;
     max-width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
     
     object-fit: contain;
     position: absolute;
@@ -42,14 +51,13 @@ body {
 #box {
     display: block;
     border-radius: 10px;
-    margin: 10px;
     padding: 15px;
     position: absolute;
     color: white;
     background: rgba(0, 0, 0, 0.6);
     position: absolute;
-    left: 10px;
-    bottom: 10px;
+    left: 13%;
+    bottom: 5%;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 20px;
 }
@@ -60,7 +68,7 @@ body {
     height: 150px;
     margin: 30px auto;
     position: absolute;
-    top: 5px;
+    top: 1%;
     left: 40%;
 }
 
@@ -68,13 +76,13 @@ body {
     width: 250px;
     height: 350px;
     position: absolute;
-    bottom: 10px;
-    right: 10px;
+    bottom: 5%;
+    right: 10%;
 }
 
 #exit {
     top: 20px;
-    left: 20px;
+    left: 15%;
     position: absolute;
     display: block;
     padding: 10px;
