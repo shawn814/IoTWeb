@@ -1,13 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
-    <link rel="shortcut icon" href="img/room.svg" type="image/x-icon">
-</head>
-<body>
-    
-</body>
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Home</title>
+        <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+        <link rel="shortcut icon" href="img/room.svg" type="image/x-icon">
+        <style>
+            * {
+                box-sizing: border-box;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            body {
+                margin: 0;
+                background-color: #00bfff;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+            }
+
+            #icon {
+                width: 200px;
+            }
+
+            a {
+                border: none;
+                border-radius: 30px;
+                padding: 15px 20px;
+                font-size: 20px;
+                color: black;
+                background: linear-gradient(to top left, white 50%, #e50122 50%);
+                background-size: 200% 200%;
+                background-position: bottom right;
+                animation-duration: 0.7s;
+                animation-name: fadeOut;
+                animation-fill-mode: forwards;
+                transition-duration: 0.3s;
+                outline: none;
+                cursor: pointer;
+                text-decoration: none;
+            }
+
+            a:hover {
+                color: white;
+                animation-name: fadeIn;
+                animation-fill-mode: forwards;
+                box-shadow: 5px 5px 5px grey;
+            }
+
+            a:active {
+                transform: translate(5px, 5px);
+                box-shadow: none;
+            }
+
+            /* animation */
+            @keyframes fadeOut {
+                from {
+                    background-position: top left;
+                }
+                to {
+                    background-position: bottom right;
+                }
+            }
+
+            @keyframes fadeIn {
+                to {
+                    background-position: top left;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <img id="icon" src="img/room.svg" alt="icon">
+        <h1>Welcome To Smart Room</h1>
+        <a href="door.html">Click me to begin!</a>
+    </body>
+
 </html>
