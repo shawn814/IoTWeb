@@ -9,7 +9,7 @@
         <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-database.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-firestore.js"></script>
         <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
-        <link rel="shortcut icon" href="room.svg" type="image/x-icon">
+        <link rel="shortcut icon" href="img/room.svg" type="image/x-icon">
         <link rel="stylesheet" href="style/room.css">
     </head>
 
@@ -35,7 +35,6 @@
             </div>
             <a id="exit" href="door.html"><img src="img/exit.png" alt="exit" width="50" height="50"></a>
             <img src="img/fan.svg" id="fan">
-            <img src="img/light2.png" id="light">
             <div id="addUser">
                 <input type="text" id="adduserinput">
                 <button id="addBtn">Add User</button>
@@ -46,7 +45,7 @@
             <img src="img/loading_block.gif" alt="loading">
             <p>Loading...</p>
         </div>
-        <audio id="emergen" src="audio/emergency.mp3"></audio>
+        <audio id="emergen" src="audio/emergency.mp3" hidden></audio>
 
         <script>
             $("#house").hide();

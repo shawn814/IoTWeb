@@ -72,14 +72,6 @@ body {
     left: 40%;
 }
 
-#light {
-    width: 250px;
-    height: 350px;
-    position: absolute;
-    bottom: 5%;
-    right: 10%;
-}
-
 #exit {
     top: 20px;
     left: 15%;
@@ -101,19 +93,19 @@ body {
 }
 
 .speed2 {
-    animation: rotation 0.7s infinite linear;
+    animation: rotation 0.8s infinite linear;
 }
 
 .speed3 {
-    animation: rotation 0.5s infinite linear;
+    animation: rotation 0.6s infinite linear;
 }
 
 .speed4 {
-    animation: rotation 0.3s infinite linear;
+    animation: rotation 0.4s infinite linear;
 }
 
 .speed5 {
-    animation: rotation 0.1s infinite linear;
+    animation: rotation 0.2s infinite linear;
 }
 
 #loading {
