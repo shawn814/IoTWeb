@@ -1,164 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Room</title>
-    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-firestore.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
-    <link rel="shortcut icon" href="img/room.svg" type="image/x-icon">
-    <link rel="stylesheet" href="style/room.css">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Room</title>
+        <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-database.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-firestore.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+        <link rel="shortcut icon" href="img/room.svg" type="image/x-icon">
+        <link rel="stylesheet" href="style/room.css">
+    </head>
 
-<body>
-    <div id="house">
-        <img src="img/nightbackground.png" id="room_bg" class="bg">
-        <img src="img/lights.png" id="light_bg" class="bg">
-        <div id="box">
-            <div class="inline">
-                <div id="light-level"></div>
-                <div id="lightAuto">(Auto)</div>
+    <body>
+        <div id="house">
+            <img src="img/nightbackground.png" id="room_bg" class="bg">
+            <img src="img/lights.png" id="light_bg" class="bg">
+            <div id="box">
+                <div class="inline">
+                    <div id="light-level"></div>
+                    <div id="lightAuto">(Auto)</div>
+                </div>
+
+                <div class="inline">
+                    <div id="fan-level"></div>
+                    <div id="fanAuto">(Auto)</div>
+                </div>
+
+                <div id="temp-level"></div>
+                <div id="intensity-level"></div>
+                <div id="hum-level"></div>
+                <div id="sound-level"></div>
             </div>
-
-            <div class="inline">
-                <div id="fan-level"></div>
-                <div id="fanAuto">(Auto)</div>
+            <a id="exit" href="door.html"><img src="img/exit.png" alt="exit" width="50" height="50"></a>
+            <img src="img/fan.svg" id="fan">
+            <div id="addUser">
+                <input type="text" id="adduserinput">
+                <button id="addBtn">Add User</button>
             </div>
-
-            <div id="temp-level"></div>
-            <div id="intensity-level"></div>
-            <div id="hum-level"></div>
-            <div id="sound-level"></div>
+            <div id="success"> User Added! </div>
         </div>
-        <a id="exit" href="door.html"><img src="img/exit.png" alt="exit" width="50" height="50"></a>
-        <img src="img/fan.svg" id="fan">
-        <div id="addUser">
-            <input type="text" id="adduserinput">
-            <button id="addBtn">Add User</button>
+
+        <div id="loading">
+            <img src="img/loading_block.gif" alt="loading">
+            <p>Loading...</p>
         </div>
-    </div>
+        <audio id="emergen" src="audio/emergency.mp3" hidden></audio>
 
-    <div id="loading">
-        <img src="img/loading_block.gif" alt="loading">
-        <p>Loading...</p>
-    </div>
-    <audio id="emergen" src="audio/emergency.mp3" hidden></audio>
+        <script>
+            $("#house").hide();
+            $("#loading").show();
+            $("#success").hide();
 
-    <script>
-        $("#house").hide();
-        $("#loading").show();
+            // Initial connection and data --------------------------------------------------------------
+            const app1 = firebase.initializeApp({
+                apiKey: "AIzaSyAm8x8KB3OBKHlt626D2GnbxiE-gkZMpUI",
+                authDomain: "iotass-767a5.firebaseapp.com",
+                databaseURL: "https://iotass-767a5.firebaseio.com",
+                projectId: "iotass-767a5",
+                storageBucket: "iotass-767a5.appspot.com",
+                messagingSenderId: "968098298405",
+                appId: "1:968098298405:web:23b77be48affa2208e1dcc",
+                measurementId: "G-SMPQ3V0BCS"
+            });
+            const app2 = firebase.initializeApp({ databaseURL: "https://bait2123-202003-02.firebaseio.com" }, 'app2');
 
-        // Initial connection and data --------------------------------------------------------------
-        const app1 = firebase.initializeApp({
-            apiKey: "AIzaSyAm8x8KB3OBKHlt626D2GnbxiE-gkZMpUI",
-            authDomain: "iotass-767a5.firebaseapp.com",
-            databaseURL: "https://iotass-767a5.firebaseio.com",
-            projectId: "iotass-767a5",
-            storageBucket: "iotass-767a5.appspot.com",
-            messagingSenderId: "968098298405",
-            appId: "1:968098298405:web:23b77be48affa2208e1dcc",
-            measurementId: "G-SMPQ3V0BCS"
-        });
-        const app2 = firebase.initializeApp({ databaseURL: "https://bait2123-202003-02.firebaseio.com" }, 'app2');
+            // Get the default database instance for an app1
+            let database = firebase.database();
+            let firestore = firebase.firestore();
 
-        // Get the default database instance for an app1
-        let database = firebase.database();
-        let firestore = firebase.firestore();
+            // Get a database instance for app2
+            let database1 = firebase.database(app2);
 
-        // Get a database instance for app2
-        let database1 = firebase.database(app2);
+            let searchParams = new URLSearchParams(window.location.search);
+            let roomId = searchParams.has('roomId') ? searchParams.get('roomId') : 0;
 
-        let searchParams = new URLSearchParams(window.location.search);
-        let roomId = searchParams.has('roomId') ? searchParams.get('roomId') : 0;
+            let light = database.ref("/Room/" + roomId + "/light");
+            let fan = database.ref("/Room/" + roomId + "/fan");
+            let lightAuto = database.ref("/Room/" + roomId + "/lightAuto");
+            let fanAuto = database.ref("/Room/" + roomId + "/fanAuto");
+            let temp = database.ref("/Room/" + roomId + "/temp");
+            let hum = database.ref("/Room/" + roomId + "/hum");
+            let intensity = database.ref("/Room/" + roomId + "/lightIntensity");
+            let soundSen = database.ref("/Room/" + roomId + "/sound");
+            let door = database.ref("/Room/" + roomId + "/door");
+            let humidityData = 0;
+            let temperatureData = 0;
+            let autoFanValue = false;
+            let autoLightValue = false;
+            let gotIntensityData = true;
+            let gotTempData = true;
+            let gotHumData = true;
+            let gotSoundData = true;
+            let emergencySound = false;
+            let alarm = $('#emergen')[0];
 
-        let light = database.ref("/Room/" + roomId + "/light");
-        let fan = database.ref("/Room/" + roomId + "/fan");
-        let lightAuto = database.ref("/Room/" + roomId + "/lightAuto");
-        let fanAuto = database.ref("/Room/" + roomId + "/fanAuto");
-        let temp = database.ref("/Room/" + roomId + "/temp");
-        let hum = database.ref("/Room/" + roomId + "/hum");
-        let intensity = database.ref("/Room/" + roomId + "/lightIntensity");
-        let soundSen = database.ref("/Room/" + roomId + "/sound");
-        let door = database.ref("/Room/" + roomId + "/door");
-        let humidityData = 0;
-        let temperatureData = 0;
-        let autoFanValue = false;
-        let autoLightValue = false;
-        let gotIntensityData = true;
-        let gotTempData = true;
-        let gotHumData = true;
-        let gotSoundData = true;
-        let emergencySound = false;
-        let alarm = $('#emergen')[0];
+            if (roomId == 0) window.location = "door.html";
 
-        if (roomId == 0) window.location = "door.html";
+            // If the room id is fake
+            database.ref("/Room").once("value", function (rooms) {
+                let verifyId = false;
+                rooms.forEach(function (room) { if (roomId == room.key && (room.child("door").val() == 1)) verifyId = true; });
+                if (!verifyId) window.location = "door.html";
+                else door.set(0);
+            });
 
-        
-        // If the room id is fake
-        database.ref("/Room").once("value", function (rooms) {
-            let verifyId = false;
-            rooms.forEach(function (room) { if (roomId == room.key && (room.child("door").val() == 1)) verifyId = true; });
-            if (!verifyId) window.location = "door.html";
-            else door.set(0);
-        });
+            // Check connection
+            database1.ref().once("value", function (e) {
+                $("#house").fadeIn();
+                $("#loading").fadeOut();
+            });
 
-        // Check connection
-        database1.ref().once("value", function (e) {
-            $("#house").fadeIn();
-            $("#loading").fadeOut();
-        });
+            // Listener event -------------------------------------------------------------------
+            light.on('value', function (power) {
+                let light_level = 0;
 
-        // Listener event -------------------------------------------------------------------
-        light.on('value', function (power) {
-            let light_level = 0;
+                light_level = parseInt(power.val() / 255 * 100);
+                $("#room_bg").css('filter', `brightness(${parseInt(power.val() / 255 * 50 + 50)}%)`);
+                $("#light_bg").css('opacity', `${light_level}%`);
 
-            light_level = Math.round(power.val() / 255 * 100);
-            $("#room_bg").css('filter', `brightness(${Math.round(power.val() / 255 * 50 + 50)}%)`);
-            $("#light_bg").css('opacity', `${light_level}%`);
+                $('#light').removeClass().addClass('light' + light_level);  // adjust light level
 
-            $('#light').removeClass().addClass('light' + light_level);  // adjust light level
+                power.val() == null ? $('#light-level').text("Light: Error") : $('#light-level').text(`Light: ${light_level}%`);  // display light level
+            });
 
-            power.val() == null ? $('#light-level').text("Light: Error") : $('#light-level').text(`Light: ${light_level}%`);  // display light level
+            lightAuto.on('value', function (snapshot) {
+                if (snapshot.val() == "1") {
+                    autoLightValue = true;
+                    $('#lightAuto').show();
+                } else {
+                    autoLightValue = false;
+                    $('#lightAuto').hide();
+                }
+            });
 
+            fan.on('value', function (fan_speed) {
+                $('#fan').removeClass();
+                if (fan_speed.val() >= 1 && fan_speed.val() <= 5) $('#fan').addClass("speed" + fan_speed.val());
+                fan_speed.val() == null ? $('#fan-level').text("Fan: Error") : $('#fan-level').text("Fan: " + fan_speed.val());
+            });
 
-        });
+            fanAuto.on('value', function (snapshot) {
+                if (snapshot.val() == "1") {
+                    autoFanValue = true
+                    $('#fanAuto').show()
+                }
+                else {
+                    autoFanValue = false
+                    $('#fanAuto').hide()
+                }
+            });
 
-        lightAuto.on('value', function (snapshot) {
-            if (snapshot.val() == "1") {
-                autoLightValue = true;
-                listenIntensity();
-                $('#lightAuto').show();
-            } else {
-                autoLightValue = false;
-                $('#lightAuto').hide();
-            }
-        });
-
-        fan.on('value', function (fan_speed) {
-            $('#fan').removeClass();
-
-            if (fan_speed.val() >= 1 && fan_speed.val() <= 5) $('#fan').addClass("speed" + fan_speed.val());
-            fan_speed.val() == null ? $('#fan-level').text("Fan: Error") : $('#fan-level').text("Fan: " + fan_speed.val());
-
-        });
-
-        fanAuto.on('value', function (snapshot) {
-            if (snapshot.val() == "1") {
-                autoFanValue = true
-                listenTemp();
-                $('#fanAuto').show()
-            }
-            else {
-                autoFanValue = false
-                $('#fanAuto').hide()
-            }
-        });
-
-        function listenTemp() {
             temp.on('value', function (snapshot) {
+                if (autoFanValue) {
+                    var q = autoFan(snapshot.val())
+                    fan.set(q.toString())
+                }
+
                 if (snapshot.val() == null || snapshot.val() == "") {
                     gotTempData = false;
                 }
@@ -166,129 +165,132 @@
                     gotTempData = true;
                     $("#temp-level").text("Temperature: " + snapshot.val() + String.fromCharCode(8451));
                     warning(snapshot.val());
-                    if (autoFanValue) {
-                        var q = autoFan(snapshot.val())
-                        fan.set(q.toString())
-                    }
                 }
             });
-        }
+            soundSen.on('value', function (snapshot) {
+                if (snapshot.val() == null || snapshot.val() == "") {
+                    gotSoundData = false;
+                }
+                else {
+                    gotTempData = true;
+                    $("#sound-level").text("Sound Level: " + snapshot.val());
+                }
+            });
 
-        function listenIntensity() {
             intensity.on('value', function (snapshot) {
                 var q = autoLight(snapshot.val());
                 var s = snapshot.val();
+                var background = 0;
                 var text = "";
+
+                $("#house").removeClass();
+
+                if (s > 400) background = 5;
+                else if (s > 300) background = 4;
+                else if (s > 200) background = 3;
+                else if (s > 100) background = 2;
+                else if (s > 50) background = 1;
+                else background = 0;
+
                 if (s == null || s == "") {
                     gotIntensityData = false;
                 } else {
                     gotIntensityData = true;
                     $('#intensity-level').text("Light Intensity: " + s);
-                    if (autoLightValue) light.set(q.toString())
                 }
-
+                if (autoLightValue) light.set(q.toString())
             });
-        }
 
-
-
-        soundSen.on('value', function (snapshot) {
-            if (snapshot.val() == null || snapshot.val() == "") {
-                gotSoundData = false;
-            }
-            else {
-                gotTempData = true;
-                $("#sound-level").text("Sound Level: " + snapshot.val());
-            }
-        });
-
-
-
-        hum.on('value', function (snapshot) {
-            if (snapshot.val() == null || snapshot.val() == "")
-                gotHumData = false;
-            else {
-                gotHumData = true;
-                $('#hum-level').text('Humidity: ' + snapshot.val())
-            }
-        })
-
-        setInterval(() => {
-            let now = new Date();
-            var tempMonth = "0" + (now.getMonth() + 1);
-            var tempDay = "0" + now.getDate();
-            var tempHour = "0" + now.getHours();
-
-            let month = tempMonth.substring(tempMonth.length - 2);
-            let day = tempDay.substring(tempDay.length - 2);
-            let hour = tempHour.substring(tempHour.length - 2);
-
-            childObject = database1.ref("/PI_01_2020" + month + day + "/" + hour);
-            childObject.limitToLast(1).once('child_added', function (object) {
-                if (!gotIntensityData) {
-                    $('#intensity-level').text("Light Intensity: " + object.val().light);
-                    if (autoLightValue) light.set(autoLight(object.val().light).toString())
+            hum.on('value', function (snapshot) {
+                if (snapshot.val() == null || snapshot.val() == "")
+                    gotHumData = false;
+                else {
+                    gotHumData = true;
+                    $('#hum-level').text('Humidity: ' + snapshot.val())
                 }
-                if (!gotTempData) {
-                    warning(object.val().tempe)
-                    $("#temp-level").text("Temperature: " + object.val().tempe + String.fromCharCode(8451));
-                    if (autoFanValue) fan.set(autoFan(object.val().tempe).toString())
-                }
-                if (!gotHumData) {
-                    $('#hum-level').text('Humidity: ' + object.val().humid);
-                }
-                if (!gotSoundData) {
-                    $('#sound-level').text("Sound: " + object.val().sound);
-                }
-            });
-        }, 1000);
+            })
 
-        $('#addBtn').click(function (e) {
-            firestore.collection("users")
-                .doc(roomId)
-                .update({
-                    macAddress: firebase.firestore.FieldValue.arrayUnion($("#adduserinput").val())
+            setInterval(() => {
+                let now = new Date();
+                var tempMonth = "0" + (now.getMonth() + 1);
+                var tempDay = "0" + now.getDate();
+                var tempHour = "0" + now.getHours();
+
+                let month = tempMonth.substring(tempMonth.length - 2);
+                let day = tempDay.substring(tempDay.length - 2);
+                let hour = tempHour.substring(tempHour.length - 2);
+
+                childObject = database1.ref("/PI_01_2020" + month + day + "/" + hour);
+                childObject.limitToLast(1).once('child_added', function (object) {
+                    if (!gotIntensityData) {
+                        $('#intensity-level').text("Light Intensity: " + object.val().light);
+                        if (autoLightValue) light.set(autoLight(object.val().light).toString())
+                    }
+                    if (!gotTempData) {
+                        warning(object.val().tempe);
+                        $("#temp-level").text("Temperature: " + object.val().tempe + String.fromCharCode(8451));
+                        if (autoFanValue) fan.set(autoFan(object.val().tempe).toString())
+                    }
+                    if (!gotHumData) {
+                        $('#hum-level').text('Humidity: ' + object.val().humid);
+                    }
+                    if (!gotSoundData) {
+                        $('#sound-level').text("Sound: " + object.val().sound);
+                    }
                 });
-            $("#adduserinput").val("");
-        });
+            }, 1000);
 
-        // Function -------------------------------------------------------------
-        function autoFan(p) {
-            if (p < 24) return 0;
-            else if (p < 27) return 1;
-            else if (p < 30) return 2;
-            else if (p < 33) return 3;
-            else if (p < 36) return 4;
-            else return 5;
-        }
+            $('#addBtn').click(function (e) {
+                firestore.collection("users")
+                    .doc(roomId)
+                    .update({
+                        macAddress: firebase.firestore.FieldValue.arrayUnion($("#adduserinput").val())
+                    }).then(function(success) {
+                        $("#success").fadeIn();
+                        setTimeout(() => {
+                            $("#success").fadeOut();
+                        }, 3000);
+                    });
+                $("#adduserinput").val("");
+            });
 
-        function autoLight(q) {
-            var p = parseInt(q, 10)
-            if (p < 50 && p > 0) return parseInt((1 - p / 50) * 255);
-            else if (p > 50) return 0;
-            else return 255;
-        }
-
-        function warning(p) {
-
-            // var celsius = parseInt(p);
-            if (p >= 40) {
-                $('#box').css("background-color", "red");
-                if (emergencySound == false) {
-                    emergencySound = true;
-                    alarm.play();
-                    // sound.removeAttr('muted');
-                }
-            } else {
-                $('#box').removeAttr('Style');
-                if (emergencySound) {
-                    emergencySound = false;
-                    alarm.pause();
-                }
-                // sound.attr('muted', "");
+            // Function -------------------------------------------------------------
+            function autoFan(p) {
+                if (p < 24) return 0;
+                else if (p < 27) return 1;
+                else if (p < 30) return 2;
+                else if (p < 33) return 3;
+                else if (p < 36) return 4;
+                else return 5;
             }
-        }
-    </script>
-</body>
+
+            function autoLight(q) {
+                var p = parseInt(q, 10)
+                if (p < 50 && p > 0) return parseInt((1 - p / 50) * 255);
+                else if (p > 50) return 0;
+                else return 255;
+            }
+
+            function warning(p) {
+
+                // var celsius = parseInt(p);
+                if (p >= 40) {
+                    $('#box').css("background-color", "red");
+                    if (emergencySound == false) {
+                        emergencySound = true;
+                        alarm.play();
+                        // sound.removeAttr('muted');
+                    }
+                } else {
+                    $('#box').removeAttr('Style');
+                    if (emergencySound) {
+                        emergencySound = false;
+                        alarm.pause();
+                    }
+                    // sound.attr('muted', "");
+                }
+            }
+        </script>
+    </body>
 
 </html>
