@@ -115,8 +115,8 @@
         light.on('value', function (power) {
             let light_level = 0;
 
-            light_level = parseInt(power.val() / 255 * 100);
-            $("#room_bg").css('filter', `brightness(${parseInt(power.val() / 255 * 50 + 50)}%)`);
+            light_level = Math.round(power.val() / 255 * 100);
+            $("#room_bg").css('filter', `brightness(${Math.round(power.val() / 255 * 50 + 50)}%)`);
             $("#light_bg").css('opacity', `${light_level}%`);
 
             $('#light').removeClass().addClass('light' + light_level);  // adjust light level
@@ -178,18 +178,7 @@
             intensity.on('value', function (snapshot) {
                 var q = autoLight(snapshot.val());
                 var s = snapshot.val();
-                var background = 0;
                 var text = "";
-
-                $("#house").removeClass();
-
-                if (s > 400) background = 5;
-                else if (s > 300) background = 4;
-                else if (s > 200) background = 3;
-                else if (s > 100) background = 2;
-                else if (s > 50) background = 1;
-                else background = 0;
-
                 if (s == null || s == "") {
                     gotIntensityData = false;
                 } else {
