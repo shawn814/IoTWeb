@@ -172,7 +172,7 @@
                     gotSoundData = false;
                 }
                 else {
-                    gotTempData = true;
+                    gotSoundData = true;
                     $("#sound-level").text("Sound Level: " + snapshot.val());
                 }
             });
@@ -235,7 +235,7 @@
                         $('#hum-level').text('Humidity: ' + object.val().humid);
                     }
                     if (!gotSoundData) {
-                        $('#sound-level').text("Sound: " + object.val().sound);
+                        $('#sound-level').text("Sound Level: " + object.val().sound);
                     }
                 });
             }, 1000);
