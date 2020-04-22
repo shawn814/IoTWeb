@@ -21,9 +21,22 @@ body {
 
 #addUser {
     position: absolute;
-    bottom: 10px;
+    bottom: 1%;
     left: 50%;
     transform: translateX(-50%);
+}
+
+#success {
+    position: absolute;
+    bottom: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: green;
+    border: green 3px solid;
+    border-radius: 10px;
+    padding: 5px 10px;
+    background-color: white;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 #room_bg {
