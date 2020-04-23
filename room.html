@@ -119,7 +119,7 @@
                 let light_level = 0;
 
                 light_level = parseInt(power.val() / 255 * 100);
-                $("#room_bg").css('filter', `brightness(${parseInt(power.val() / 255 * 50 + 50)}%)`);
+                $("#room_bg").css('filter', `brightness(${Math.round(power.val() / 255 * 50 + 50)}%)`);
                 $("#light_bg").css('opacity', `${light_level}%`);
 
                 $('#light').removeClass().addClass('light' + light_level);  // adjust light level
