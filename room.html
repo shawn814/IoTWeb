@@ -166,7 +166,7 @@
                     gotTempData = true;
                     $("#temp-level").text("Temperature: " + currentTemp + String.fromCharCode(8451));
                     warning(snapshot.val());
-                    if (autoFanValue )fan.set(autoFan(currentTemp));
+                    if (autoFanValue) fan.set(autoFan(currentTemp));
                 }
             });
             
@@ -216,11 +216,13 @@
                     if (!gotIntensityData) {
                         $('#intensity-level').text("Light Intensity: " + object.val().light);
                         if (autoLightValue) light.set(autoLight(object.val().light).toString())
+                        currentIntensity = object.val().light;
                     }
                     if (!gotTempData) {
                         warning(object.val().tempe);
                         $("#temp-level").text("Temperature: " + object.val().tempe + String.fromCharCode(8451));
-                        if (autoFanValue) fan.set(autoFan(object.val().tempe).toString())
+                        if (autoFanValue) fan.set(autoFan(object.val().light).toString())
+                        currentTemp = object.val().light;
                     }
                     if (!gotHumData) {
                         $('#hum-level').text('Humidity: ' + object.val().humid);
