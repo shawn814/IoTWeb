@@ -118,7 +118,7 @@
             light.on('value', function (power) {
                 let light_level = 0;
 
-                light_level = parseInt(power.val() / 255 * 100);
+                light_level = Math.round(power.val() / 255 * 100);
                 $("#room_bg").css('filter', `brightness(${Math.round(power.val() / 255 * 50 + 50)}%)`);
                 $("#light_bg").css('opacity', `${light_level}%`);
 
