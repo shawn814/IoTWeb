@@ -131,6 +131,7 @@
                 if (snapshot.val() == "1") {
                     autoLightValue = true;
                     $('#lightAuto').show();
+                    light.set(autoLight(currentIntensity));
                 } else {
                     autoLightValue = false;
                     $('#lightAuto').hide();
@@ -145,12 +146,13 @@
 
             fanAuto.on('value', function (snapshot) {
                 if (snapshot.val() == "1") {
-                    autoFanValue = true
-                    $('#fanAuto').show()
+                    autoFanValue = true;
+                    $('#fanAuto').show();
+                    fan.set(autoFan(currentTemp));
                 }
                 else {
-                    autoFanValue = false
-                    $('#fanAuto').hide()
+                    autoFanValue = false;
+                    $('#fanAuto').hide();
                 }
             });
 
@@ -164,9 +166,8 @@
                     gotTempData = true;
                     $("#temp-level").text("Temperature: " + snapshot.val() + String.fromCharCode(8451));
                     warning(snapshot.val());
+                    fan.set(autoFanValue ? autoFan(currentTemp) : currentTemp)
                 }
-                
-                fan.set(autoFanValue ? autoFan(currentTemp) : currentTemp)
             });
             
             soundSen.on('value', function (snapshot) {
@@ -180,27 +181,15 @@
             });
 
             intensity.on('value', function (snapshot) {
-                var q = autoLight(snapshot.val());
-                var s = snapshot.val();
-                var background = 0;
-                var text = "";
+                currentIntensity = snapshot.val();
 
-                $("#house").removeClass();
-
-                if (s > 400) background = 5;
-                else if (s > 300) background = 4;
-                else if (s > 200) background = 3;
-                else if (s > 100) background = 2;
-                else if (s > 50) background = 1;
-                else background = 0;
-
-                if (s == null || s == "") {
+                if (currentIntensity == null || currentIntensity == "") {
                     gotIntensityData = false;
                 } else {
                     gotIntensityData = true;
                     $('#intensity-level').text("Light Intensity: " + s);
+                    light.set(autoLightValue ? autoLight(currentIntensity) : currentIntensity);
                 }
-                light.set(autoLightValue ? autoLight(q) : q)
             });
 
             hum.on('value', function (snapshot) {
