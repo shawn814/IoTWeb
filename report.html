@@ -10,6 +10,8 @@
         <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-database.js"></script>
         <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
         <link rel="shortcut icon" href="img/room.svg" type="image/x-icon">
+
+        <!--  CSS Style        -->
         <style>
             body {
                 position: relative;
@@ -119,7 +121,6 @@
     </head>
 
     <body>
-
         <div id="box">
             <h1 style="text-align: center;">Temperature and Humidity Report</h1>
             <div id="form">
@@ -138,6 +139,7 @@
         </div>
     </body>
     <script>
+        // Firebase Connection
         firebase.initializeApp({
             databaseURL: "https://bait2123-202003-02.firebaseio.com"
         });
@@ -157,6 +159,7 @@
         let day = "";
         var validInput = false;
 
+        // Set body height
         function set_body_height() { // set body height = window height
             $('body').height($(window).height());
         }
@@ -164,6 +167,8 @@
             $(window).bind('resize', set_body_height);
             set_body_height();
         });
+        
+        //Button listener
         $('#download').on("click", e => {
             /*Get image of canvas element*/
             var url_base64jp = document.getElementById("myChart").toDataURL("image/jpg");
@@ -172,6 +177,7 @@
             /*insert chart image url to download button (tag: <a></a>) */
             a.href = url_base64jp;
         });
+
         $('#btn').on('click', e => {
             var date = new Date($('#myDate').val());
             var aDay = date.getDate();
@@ -180,10 +186,13 @@
             // C:/Users/Shawn/Desktop/webIOT/report.html?day=04&month=04&year=2020
             window.location = "report.html?day=" + aDay + "&month=" + aMonth + "&year=" + aYear;
         });
-        // check url
+
+        
         $("#box").hide();
         $('#bg').hide();
         $('#graphBox').hide();
+
+        // check url
         let searchParams = new URLSearchParams(window.location.search);
         var tempDay = searchParams.has('day') ? searchParams.get('day') : "";
         var tempMonth = searchParams.has('month') ? searchParams.get('month') : "";
@@ -200,12 +209,13 @@
                     var tempDate = child.key.substr(child.key.length - 8);
                     if (dateInput.localeCompare(tempDate) == 0) {
                         validInput = true;
-                        // console.log("Got");
                     }
                 });
+
                 // if got data after valid() turn it to true
                 if (validInput) {
                     var a = database.ref().child('/PI_01_' + dateInput);
+                    // Read database
                     a.once("value", function (snapshot) {
                         snapshot.forEach(function (child) {
                             var hum = temp = count = 0;
@@ -243,16 +253,17 @@
                             tempeValue.push(Math.round(temp / count));
                             humValue.push(Math.round(hum / count));
                         });
+
+                        //Draw chart
                         draw();
                         $('#graphBox').show();
                         popResult()
 
                     });
                 } else {
-                    // nothing come out
+                    // No result found
                     popResult()
                     alert("No result found");
-                    console.log("No result1");
                 }
             });
         } else {
@@ -265,8 +276,9 @@
             var today = now.getFullYear() + "-" + (tempMonth) + "-" + (tempDay);
             $('#box').addClass("boxCenter")
             $('#myDate').val(today);
-            console.log("No result2");
         }
+
+        // Functions
         function popResult() {
             $("#box").show();
             $('#gif').hide();
@@ -274,7 +286,6 @@
 
         function draw() {
             var canvas = document.getElementById("myChart");
-
             Chart.defaults.global.defaultFontFamily = "Lato";
             Chart.defaults.global.defaultFontSize = 18;
             canvas.style.backgroundColor = '#FFF';
@@ -328,7 +339,6 @@
                         ticks: {
                             beginAtZero: false,
                             fontColor: 'grey',
-
                         },
                         scaleLabel: {
                             display: true,
@@ -358,103 +368,13 @@
                 chartArea: {
                     backgroundColor: '#FFF',
                 }
-
             };
             var lineChart = new Chart(canvas, {
                 type: 'line',
                 data: data,
                 options: chartOptions
             });
-
-
         }
-        // var ctx = document.getElementById('myChart');
-        // var myChart = new Chart(ctx, {
-        //     type: 'bar',
-        //     data: {
-        //         labels: hourLabel,
-        //         datasets: [{
-        //             label: '# Celsius',
-        //             data: tempValue,
-
-        //             borderWidth: 1
-        //         }]
-        //     },
-        //     options: {
-        //         scales: {
-        //             yAxes: [{
-        //                 ticks: {
-        //                     beginAtZero: true
-        //                 }
-        //             }]
-        //         }
-        //     }
-        // });
-
-    // for (i = 0; i < 24; i++) {
-    //     var temp = hum = 0;
-    //     var hr = "";
-    //     if (i < 10) {
-    //         hr = "0" + i;
-    //     }
-    //     else {
-    //         hr = i.toString();
-    //     }
-    //     if (data[hr]) {
-    //         for (j = 0; j <= 59; j = j + 1) {
-    //             var minute = "";
-    //             if (j < 10) {
-    //                 minute = "0" + j;
-    //             } else {
-    //                 minute = j.toString();
-    //             }
-
-    //             for (k = 0; k < 60; k = k + 10) {
-    //                 var minuteSecond = "";
-    //                 if (k == 0) {
-    //                     minuteSecond = minute + "0" + k;
-    //                 } else {
-    //                     minuteSecond = minute + "" + k;
-    //                 }
-    //                 console.log(hr + minuteSecond);
-    //                 // var pro = data[hr][minuteSecond] || {};
-    //                 if (typeof data[hr][minuteSecond] === 'undefined'){
-    //                     console.log("undefined");
-    //                 }else{
-    //                     temp += data[hr][minuteSecond].tempe;
-    //                     hum += data[hr][minuteSecond].humid;
-    //                 }
-    //                 // if (typeof data[hr][minuteSecond].length) {
-    //                 //     temp += data[hr][minuteSecond].tempe;
-    //                 //     hum += data[hr][minuteSecond].humid;
-    //                 // }
-    //             }
-    //         }
-    //     }else{
-    //         console.log("nicholas suck");
-    //     }
-    // }
-
-
-
-
-
-
-
-        // data[hr].forEach(element => {
-        //     console.log(element.humid);
-        // });
-        // tempValue.push(temp);
-        // humValue.push(hum);
-        // console.log(tempValue[i])
-        // console.log("-------------------------");
-        // conclude the hr 
-
-
-    // }
-        // $.each(data, function (index,value) { console.log(index + ": " + value); });
-
-
     </script>
 
 </html>
