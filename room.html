@@ -131,7 +131,7 @@
                 if (snapshot.val() == "1") {
                     autoLightValue = true;
                     $('#lightAuto').show();
-                    light.set(autoLight(currentIntensity));
+                    light.set(autoLight(currentIntensity).toString());
                 } else {
                     autoLightValue = false;
                     $('#lightAuto').hide();
@@ -188,7 +188,7 @@
                 } else {
                     gotIntensityData = true;
                     $('#intensity-level').text("Light Intensity: " + currentIntensity);
-                    if (autoLightValue) light.set(autoLight(currentIntensity));
+                    if (autoLightValue) light.set(autoLight(currentIntensity).toString());
                 }
             });
 
