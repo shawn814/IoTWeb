@@ -183,7 +183,7 @@
             intensity.on('value', function (snapshot) {
                 currentIntensity = snapshot.val();
 
-                if (currentIntensity == null || currentIntensity == "") {
+                if (snapshot.val() == null || snapshot.val() == "") {
                     gotIntensityData = false;
                 } else {
                     gotIntensityData = true;
