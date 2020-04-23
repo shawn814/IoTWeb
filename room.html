@@ -72,9 +72,11 @@
 
             // Get a database instance for app2
             let database1 = firebase.database(app2);
+
             //Read url parameter
             let searchParams = new URLSearchParams(window.location.search);
             let roomId = searchParams.has('roomId') ? searchParams.get('roomId') : 0;
+
             // Get reference from firebase
             let light = database.ref("/Room/" + roomId + "/light");
             let fan = database.ref("/Room/" + roomId + "/fan");
@@ -85,6 +87,7 @@
             let intensity = database.ref("/Room/" + roomId + "/lightIntensity");
             let soundSen = database.ref("/Room/" + roomId + "/sound");
             let door = database.ref("/Room/" + roomId + "/door");
+
             //Local Variable
             let currentTemp = 0;
             let currentIntensity = 0;
