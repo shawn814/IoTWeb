@@ -249,12 +249,12 @@
 
             // Function -------------------------------------------------------------
             function autoFan(p) {
-                if (p < 24) return 0;
-                else if (p < 27) return 1;
-                else if (p < 30) return 2;
-                else if (p < 33) return 3;
-                else if (p < 36) return 4;
-                else return 5;
+                if (p < 24) return "0";
+                else if (p < 27) return "1";
+                else if (p < 30) return "2";
+                else if (p < 33) return "3";
+                else if (p < 36) return "4";
+                else return "5";
             }
 
             function autoLight(q) {
