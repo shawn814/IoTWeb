@@ -164,7 +164,7 @@
                 }
                 else {
                     gotTempData = true;
-                    $("#temp-level").text("Temperature: " + snapshot.val() + String.fromCharCode(8451));
+                    $("#temp-level").text("Temperature: " + currentTemp + String.fromCharCode(8451));
                     warning(snapshot.val());
                     if (autoFanValue )fan.set(autoFan(currentTemp));
                 }
@@ -187,7 +187,7 @@
                     gotIntensityData = false;
                 } else {
                     gotIntensityData = true;
-                    $('#intensity-level').text("Light Intensity: " + s);
+                    $('#intensity-level').text("Light Intensity: " + currentIntensity);
                     if (autoLightValue) light.set(autoLight(currentIntensity));
                 }
             });
