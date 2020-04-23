@@ -85,6 +85,8 @@
             let intensity = database.ref("/Room/" + roomId + "/lightIntensity");
             let soundSen = database.ref("/Room/" + roomId + "/sound");
             let door = database.ref("/Room/" + roomId + "/door");
+            let currentTemp = 0;
+            let currentIntensity = 0;
             let humidityData = 0;
             let temperatureData = 0;
             let autoFanValue = false;
@@ -153,10 +155,7 @@
             });
 
             temp.on('value', function (snapshot) {
-                if (autoFanValue) {
-                    var q = autoFan(snapshot.val())
-                    fan.set(q.toString())
-                }
+                currentTemp = snapshot.val();
 
                 if (snapshot.val() == null || snapshot.val() == "") {
                     gotTempData = false;
@@ -166,7 +165,10 @@
                     $("#temp-level").text("Temperature: " + snapshot.val() + String.fromCharCode(8451));
                     warning(snapshot.val());
                 }
+                
+                fan.set(autoFanValue ? autoFan(currentTemp) : currentTemp)
             });
+            
             soundSen.on('value', function (snapshot) {
                 if (snapshot.val() == null || snapshot.val() == "") {
                     gotSoundData = false;
@@ -198,7 +200,7 @@
                     gotIntensityData = true;
                     $('#intensity-level').text("Light Intensity: " + s);
                 }
-                if (autoLightValue) light.set(q.toString())
+                light.set(autoLightValue ? autoLight(q) : q)
             });
 
             hum.on('value', function (snapshot) {
