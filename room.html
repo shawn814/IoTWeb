@@ -72,10 +72,10 @@
 
             // Get a database instance for app2
             let database1 = firebase.database(app2);
-
+            //Read url parameter
             let searchParams = new URLSearchParams(window.location.search);
             let roomId = searchParams.has('roomId') ? searchParams.get('roomId') : 0;
-
+            // Get reference from firebase
             let light = database.ref("/Room/" + roomId + "/light");
             let fan = database.ref("/Room/" + roomId + "/fan");
             let lightAuto = database.ref("/Room/" + roomId + "/lightAuto");
@@ -85,6 +85,7 @@
             let intensity = database.ref("/Room/" + roomId + "/lightIntensity");
             let soundSen = database.ref("/Room/" + roomId + "/sound");
             let door = database.ref("/Room/" + roomId + "/door");
+            //Local Variable
             let currentTemp = 0;
             let currentIntensity = 0;
             let humidityData = 0;
@@ -97,7 +98,8 @@
             let gotSoundData = true;
             let emergencySound = false;
             let alarm = $('#emergen')[0];
-
+            
+            // If roomId is not found
             if (roomId == 0) window.location = "door.html";
 
             // If the room id is fake
@@ -117,13 +119,10 @@
             // Listener event -------------------------------------------------------------------
             light.on('value', function (power) {
                 let light_level = 0;
-
                 light_level = Math.round(power.val() / 255 * 100);
                 $("#room_bg").css('filter', `brightness(${Math.round(power.val() / 255 * 50 + 50)}%)`);
                 $("#light_bg").css('opacity', `${light_level}%`);
-
                 $('#light').removeClass().addClass('light' + light_level);  // adjust light level
-
                 power.val() == null ? $('#light-level').text("Light: Error") : $('#light-level').text(`Light: ${light_level}%`);  // display light level
             });
 
@@ -200,7 +199,8 @@
                     $('#hum-level').text('Humidity: ' + snapshot.val());
                 }
             })
-
+            
+            //Set time for listening common resource data
             setInterval(() => {
                 let now = new Date();
                 var tempMonth = "0" + (now.getMonth() + 1);
@@ -210,8 +210,9 @@
                 let month = tempMonth.substring(tempMonth.length - 2);
                 let day = tempDay.substring(tempDay.length - 2);
                 let hour = tempHour.substring(tempHour.length - 2);
-
                 childObject = database1.ref("/PI_01_2020" + month + day + "/" + hour);
+                
+                //When child is added
                 childObject.limitToLast(1).once('child_added', function (object) {
                     if (!gotIntensityData) {
                         $('#intensity-level').text("Light Intensity: " + object.val().light);
@@ -232,7 +233,8 @@
                     }
                 });
             }, 1000);
-
+            
+            // Button Listener
             $('#addBtn').click(function (e) {
                 firestore.collection("users")
                     .doc(roomId)
@@ -246,7 +248,7 @@
                     });
                 $("#adduserinput").val("");
             });
-
+            
             // Function -------------------------------------------------------------
             function autoFan(p) {
                 if (p < 20) return "0";
@@ -265,14 +267,12 @@
             }
 
             function warning(p) {
-
                 // var celsius = parseInt(p);
                 if (p >= 40) {
                     $('#box').css("background-color", "red");
                     if (emergencySound == false) {
                         emergencySound = true;
                         alarm.play();
-                        // sound.removeAttr('muted');
                     }
                 } else {
                     $('#box').removeAttr('Style');
@@ -280,7 +280,6 @@
                         emergencySound = false;
                         alarm.pause();
                     }
-                    // sound.attr('muted', "");
                 }
             }
         </script>
